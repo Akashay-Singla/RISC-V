@@ -1,8 +1,9 @@
 module Decoder_64_bit_RISC(
 input [31:0] input_inst,
-output reg [3:0] Alu_opr,
+output reg [3:0] Alu_opr,load_flag,
+output reg [1:0] store_flag,
 output reg [4:0] Rd_addr, Rs1_addr,Rs2_addr,
-output reg Wen);
+output reg reg_write_en,mem_write_en,mem_read_en);
 
 
 //This function finds the sub instruction of R-type
@@ -40,6 +41,31 @@ default: Alu_opr_I = 1111; //NOP
 endcase
 endfunction
 
+function [1:0]store_format;
+input [2:0] func3;
+    
+case (func3)
+3'b000: store_format = 00; //Store byte instruction
+3'b001: store_format = 01; //Store halfword instruction
+3'b010: store_format = 10;//Store word instruction
+3'b011: store_format = 11;//Store doubleword
+default: store_format = 2'bz; //NOP
+endcase
+endfunction
+
+function [2:0]load_format;
+input [2:0] func3;
+case (func3)
+3'b000: load_format = 000; //Load byte instruction
+3'b001: load_format = 001; //Load halfword instruction
+3'b010: load_format = 010;//Load word instruction
+3'b100: load_format = 011;// Load unsigned byte
+3'b101: load_format = 100; //load unsigned halfword
+3'b011: load_format = 101;//Load doubleword instruction
+default: load_format = 111; //NOP
+endcase
+endfunction
+
 //always @(posedge clk)begin
 always @(input_inst) begin
 /*inst_format = inst_type();
@@ -51,7 +77,9 @@ case (input_inst[6:0])
   Rs1_addr = input_inst[19:15];
   Rs2_addr = input_inst[24:20];
   Rd_addr =  input_inst[11:7];
-  Wen=1;
+  reg_write_en=1'b1;
+  mem_write_en=1'b0;
+  mem_read_en=1'b0;
   Alu_opr = Alu_opr_R(input_inst[14:12],input_inst[31:25]);
 end
 //I-immediate instructions
@@ -60,7 +88,9 @@ end
   Rs1_addr = input_inst[19:15];
   Rs2_addr = 5'bz;
   Rd_addr =  input_inst[11:7];
-  Wen=1;
+  reg_write_en=1'b1;
+  mem_write_en=1'b0;
+  mem_read_en=1'b0;
   Alu_opr = Alu_opr_I(input_inst[14:12]);
 end
 //Load-instruction
@@ -68,7 +98,10 @@ end
   Rs1_addr = input_inst[19:15];
   Rs2_addr = 5'bz;
   Rd_addr =  input_inst[11:7];
-  Wen=0;
+  reg_write_en=1'b1;
+  mem_write_en=1'b0;
+  mem_read_en=1'b1;
+  load_flag = load_format(input_inst[14:12]);
   Alu_opr = 0000;
 end
 //Store Instruction
@@ -79,7 +112,10 @@ end
   Rs2_addr = input_inst[24:20];
   Rd_addr = 5'bz;
   Alu_opr = 0000;
-  Wen=0;
+  store_flag=store_format(input_inst[14:12]);
+  reg_write_en=1'b0;
+  mem_write_en=1'b1;
+  mem_read_en=1'b0;
 end
 //Branch Instruction
 7'b1100111: begin
@@ -90,7 +126,9 @@ end
   Rs1_addr = input_inst[19:15];
   Rs2_addr = input_inst[24:20];
   Alu_opr = 1001;// Compare ""==""
-  Wen=0;
+  reg_write_en=1'b0;
+  mem_write_en=1'b0;
+  mem_read_en=1'b0;
 end
 default: begin
  Rs1_addr= 5'bz;
@@ -98,10 +136,12 @@ default: begin
  Rd_addr = 5'bz;
  //immed = 12'bz;
  Alu_opr = 4'bz;
- Wen=0;
+  reg_write_en=1'b0;
+  mem_write_en=1'b0;
+  mem_read_en=1'b0;
 end
 endcase
-$display("Alu_opr: %b, Rd_addr: %b , Rs1_addr: %b, Rs2_addr: %b, Wen: %b",Alu_opr, Rd_addr,Rs1_addr,Rs2_addr,Wen);
+$display("Alu_opr: %b, Rd_addr: %b , Rs1_addr: %b, Rs2_addr: %b, reg_write_en: %b",Alu_opr, Rd_addr,Rs1_addr,Rs2_addr,reg_write_en);
 end
 endmodule
 
@@ -109,33 +149,40 @@ module Reg_file(input Wen,
 input [4:0] Rs1_addr,Rs2_addr, Rd_addr,
 input [63:0] write_data,
 output [63:0] Rs1_data,Rs2_data);
-reg[63:0] mem[31:0]; 
+
+reg[63:0] register[31:0]; //32 registers of 64-bit (2^5 where 5 is size of address bus of instruction)
 integer  i;
+
+//Initilization of Registers with zero value
 initial begin
   $display("Entered into intial memory loop");
   for(i=0;i<32;i++)begin
-    if(i==5'b10100) begin
-      mem[i] = 64'h456701023D2;
+    if(i==5'b10100) begin   //Giving some value at x14(hex & 20 in decimal) for the testing purpose
+      register[i] = 64'h456701023D2;
     end
-    else if(i== 5'b10101 )begin
-     mem[i]= 64'h012005C2;
+    else if(i== 5'b10101 )begin //Giving some value at x15(hex & 21 in decimal) for the testing purpose
+     register[i]= 64'h012005C2;
+    end
+    else if(i== 5'b01010)begin  //Giving some value at xA(hex & 10 in decimal) for the testing purpose
+      register[i] = 64'h0000000000000002;
     end
     else begin
-      mem[i]=64'd0;
+      register[i]=64'd0; //intializing the memory with zero values
     end
   end
 end
 
- assign Rs1_data = mem[Rs1_addr];
- assign Rs2_data = mem[Rs2_addr];
+ assign Rs1_data = register[Rs1_addr];  //gives register value for input 1 of ALU
+ assign Rs2_data = register[Rs2_addr];  //gives register value for input 2 of ALU
 always @(Rs1_data or Rs2_data) begin
   $display("Rs1_data: %h, Rs2_data: %h", Rs1_data,Rs2_data);
 end
+//Checks the Write enable bit then assigns the value to the particular register  
 always @(posedge Wen or write_data )begin
-  //if(Wen)begin
+  if(Wen)begin
    $display("Entered into write loop");
-  mem[Rd_addr] = write_data;
-  $monitor("Rd_addr: %h, mem[Rd_addr]: %h",Rd_addr,mem[Rd_addr]);
-//end
+  register[Rd_addr] = write_data;
+  $monitor("Rd_addr: %h, mem[Rd_addr]: %h",Rd_addr,register[Rd_addr]);
+end
 end
 endmodule
