@@ -22,10 +22,10 @@ Single_datapath.v
 testbench.v
 50
 sysc_uni_pwd=/home/015349334@SJSUAD.SJSU.EDU/ee271/RISC_V_Project/Single_Cycle_Datapath
-XDG_SESSION_ID=176293
+XDG_SESSION_ID=177345
 XDG_RUNTIME_DIR=/run/user/245455952
 XDG_DATA_DIRS=/home/015349334@SJSUAD.SJSU.EDU/.local/share/flatpak/exports/share:/var/lib/flatpak/exports/share:/usr/local/share:/usr/share
-VSCODE_IPC_HOOK_CLI=/run/user/245455952/vscode-ipc-e9e2c4b9-b7b0-4252-94ab-2641752ff576.sock
+VSCODE_IPC_HOOK_CLI=/run/user/245455952/vscode-ipc-85a642cf-5636-4cdb-9470-3ab8889ab13f.sock
 VSCODE_GIT_IPC_HANDLE=/run/user/245455952/vscode-git-bf2b5d6185.sock
 VSCODE_GIT_ASKPASS_NODE=/home/015349334@SJSUAD.SJSU.EDU/.vscode-server/bin/b4c1bd0a9b03c749ea011b06c6d2676c8091a70c/node
 VSCODE_GIT_ASKPASS_MAIN=/home/015349334@SJSUAD.SJSU.EDU/.vscode-server/bin/b4c1bd0a9b03c749ea011b06c6d2676c8091a70c/extensions/git/dist/askpass-main.js
@@ -40,8 +40,8 @@ UNAME=/bin/uname
 TOOL_HOME=/apps/synopsys/VCSMX_NEW/linux
 TERM_PROGRAM_VERSION=1.57.0
 TERM_PROGRAM=vscode
-SSH_CONNECTION=10.40.43.174 49415 130.65.179.177 22
-SSH_CLIENT=10.40.43.174 49415 22
+SSH_CONNECTION=10.40.43.189 52318 130.65.179.177 22
+SSH_CLIENT=10.40.43.189 52318 22
 SSH_ASKPASS=/usr/libexec/openssh/gnome-ssh-askpass
 SNPSLMS_LICENSE_FILE=27000@cadence3.engr.sjsu.edu:/apps/synopsys/license/current-license-key
 SFLM_SERVER=cadence3
@@ -72,15 +72,16 @@ BASH_FUNC_scl%%=() {  if [ "$1" = "load" -o "$1" = "unload" ]; then_ eval "modul
 BASH_FUNC_module%%=() {  unset _mlshdbg;_ if [ "${MODULES_SILENT_SHELL_DEBUG:-0}" = '1' ]; then_ case "$-" in _ *v*x*)_ set +vx;_ _mlshdbg='vx'_ ;;_ *v*)_ set +v;_ _mlshdbg='v'_ ;;_ *x*)_ set +x;_ _mlshdbg='x'_ ;;_ *)_ _mlshdbg=''_ ;;_ esac;_ fi;_ unset _mlre _mlIFS;_ if [ -n "${IFS+x}" ]; then_ _mlIFS=$IFS;_ fi;_ IFS=' ';_ for _mlv in ${MODULES_RUN_QUARANTINE:-};_ do_ if [ "${_mlv}" = "${_mlv##*[!A-Za-z0-9_]}" -a "${_mlv}" = "${_mlv#[0-9]}" ]; then_ if [ -n "`eval 'echo ${'$_mlv'+x}'`" ]; then_ _mlre="${_mlre:-}${_mlv}_modquar='`eval 'echo ${'$_mlv'}'`' ";_ fi;_ _mlrv="MODULES_RUNENV_${_mlv}";_ _mlre="${_mlre:-}${_mlv}='`eval 'echo ${'$_mlrv':-}'`' ";_ fi;_ done;_ if [ -n "${_mlre:-}" ]; then_ eval `eval ${_mlre}/usr/bin/tclsh /usr/share/Modules/libexec/modulecmd.tcl bash '"$@"'`;_ else_ eval `/usr/bin/tclsh /usr/share/Modules/libexec/modulecmd.tcl bash "$@"`;_ fi;_ _mlstatus=$?;_ if [ -n "${_mlIFS+x}" ]; then_ IFS=$_mlIFS;_ else_ unset IFS;_ fi;_ unset _mlre _mlv _mlrv _mlIFS;_ if [ -n "${_mlshdbg:-}" ]; then_ set -$_mlshdbg;_ fi;_ unset _mlshdbg;_ return $_mlstatus_}
 BASH_ENV=/usr/share/Modules/init/bash
 0
-5
+6
+1623945897 Reg_file.v
 1623908449 Data_mem.v
 1623826662 Alu.v
-1623909167 decoder.v
-1623908434 Single_datapath.v
+1623945902 decoder.v
+1623945929 Single_datapath.v
 1623905593 testbench.v
 4
 0 
 1410372690 /apps/synopsys/VCSMX_NEW/linux/lib/libvirsim.so
 1410372633 /apps/synopsys/VCSMX_NEW/linux/lib/librterrorinf.so
 1410372654 /apps/synopsys/VCSMX_NEW/linux/lib/libsnpsmalloc.so
-1623909175 simv.daidir
+1623945945 simv.daidir

@@ -1,6 +1,7 @@
 `include "decoder.v"
 `include "Alu.v"
 `include "Data_mem.v"
+`include "Reg_file.v"
 module Single_datapath(input[31:0] instr,
                        input clk);
 reg [3:0] Alu_opr,load_flag;
