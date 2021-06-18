@@ -12,7 +12,7 @@ initial begin
   end
 end
 
-always @(mem_write_en or mem_read_en) begin
+always @(mem_write_en ==1 or mem_read_en==1) begin
   $display("mem_addr: %h, mem_data_input %h",mem_addr, mem_data_input);
 //Store instructions
 if(mem_write_en == 1 && mem_read_en == 0)begin

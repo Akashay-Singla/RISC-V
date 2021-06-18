@@ -3,7 +3,7 @@ input [31:0] input_inst,
 output reg [3:0] Alu_opr,load_flag,
 output reg [1:0] store_flag,
 output reg [4:0] Rd_addr, Rs1_addr,Rs2_addr,
-output reg reg_write_en,mem_write_en,mem_read_en);
+output reg reg_write_en,mem_write_en,mem_read_en,branch_en);
 
 
 //This function finds the sub instruction of R-type
@@ -41,6 +41,23 @@ default: Alu_opr_I = 1111; //NOP
 endcase
 endfunction
 
+
+
+function [2:0]Alu_opr_B;
+input [2:0] func3;
+    
+case (func3)
+3'b000: Alu_opr_B = 0111; //beq instruction
+3'b001: Alu_opr_B = 1000; //Bne instruction
+3'b100: Alu_opr_B = 1001;//blt instruction
+3'b101: Alu_opr_B = 1010;//bge instruction
+//1010 Alu_opr_R = 0101;//srai instruction
+3'b110: Alu_opr_B = 0110;//bltu instruction
+3'b111: Alu_opr_B = 0111;//bgeu instruction
+default: Alu_opr_B = 1111; //NOP
+endcase
+endfunction
+
 function [1:0]store_format;
 input [2:0] func3;
     
@@ -68,6 +85,7 @@ endfunction
 
 //always @(posedge clk)begin
 always @(input_inst) begin
+  $display("input_inst: %h",input_inst );
 /*inst_format = inst_type();
 $display("inst_format: %h", inst_format);
 $display("input_inst[6:0] = %h",input_inst[6:0] );*/
@@ -80,6 +98,7 @@ case (input_inst[6:0])
   reg_write_en=1'b1;
   mem_write_en=1'b0;
   mem_read_en=1'b0;
+  branch_en = 1'b0;
   Alu_opr = Alu_opr_R(input_inst[14:12],input_inst[31:25]);
 end
 //I-immediate instructions
@@ -91,6 +110,7 @@ end
   reg_write_en=1'b1;
   mem_write_en=1'b0;
   mem_read_en=1'b0;
+  branch_en = 1'b0;
   Alu_opr = Alu_opr_I(input_inst[14:12]);
 end
 //Load-instruction
@@ -101,6 +121,7 @@ end
   reg_write_en=1'b1;
   mem_write_en=1'b0;
   mem_read_en=1'b1;
+  branch_en = 1'b0;
   load_flag = load_format(input_inst[14:12]);
   Alu_opr = 0000;
 end
@@ -116,6 +137,7 @@ end
   reg_write_en=1'b0;
   mem_write_en=1'b1;
   mem_read_en=1'b0;
+  branch_en = 1'b0;
 end
 //Branch Instruction
 7'b1100111: begin
@@ -123,12 +145,14 @@ end
   //immed[10] = input_inst[7];
   //immed[3:0] = input_inst[11:8];
   //immed[9:4] = input_inst[30:25];
+  $display("Entered into branch loop");
   Rs1_addr = input_inst[19:15];
   Rs2_addr = input_inst[24:20];
-  Alu_opr = 1001;// Compare ""==""
+  Alu_opr = Alu_opr_B(input_inst[14:12]);
   reg_write_en=1'b0;
   mem_write_en=1'b0;
   mem_read_en=1'b0;
+  branch_en = 1'b1;
 end
 default: begin
  Rs1_addr= 5'bz;
@@ -139,6 +163,7 @@ default: begin
   reg_write_en=1'b0;
   mem_write_en=1'b0;
   mem_read_en=1'b0;
+  branch_en=1'b0;
 end
 endcase
 $display("Alu_opr: %b, Rd_addr: %b , Rs1_addr: %b, Rs2_addr: %b, reg_write_en: %b",Alu_opr, Rd_addr,Rs1_addr,Rs2_addr,reg_write_en);

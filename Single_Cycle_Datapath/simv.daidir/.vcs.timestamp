@@ -1,5 +1,5 @@
 0 
-20
+19
 -Mamsrun=
 -Masflags=--32
 -Mcc=gcc
@@ -19,7 +19,6 @@
 -sverilog
 /apps/synopsys/VCSMX_NEW/linux/bin/vcs1
 Single_datapath.v
-testbench.v
 50
 sysc_uni_pwd=/home/015349334@SJSUAD.SJSU.EDU/ee271/RISC_V_Project/Single_Cycle_Datapath
 XDG_SESSION_ID=177345
@@ -73,15 +72,15 @@ BASH_FUNC_module%%=() {  unset _mlshdbg;_ if [ "${MODULES_SILENT_SHELL_DEBUG:-0}
 BASH_ENV=/usr/share/Modules/init/bash
 0
 6
-1623945897 Reg_file.v
-1623908449 Data_mem.v
-1623826662 Alu.v
-1623945902 decoder.v
-1623945929 Single_datapath.v
-1623905593 testbench.v
+1623980927 Fetch.v
+1623960841 Reg_file.v
+1623960776 Data_mem.v
+1623982474 Alu.v
+1623979792 decoder.v
+1623980561 Single_datapath.v
 4
 0 
 1410372690 /apps/synopsys/VCSMX_NEW/linux/lib/libvirsim.so
 1410372633 /apps/synopsys/VCSMX_NEW/linux/lib/librterrorinf.so
 1410372654 /apps/synopsys/VCSMX_NEW/linux/lib/libsnpsmalloc.so
-1623945945 simv.daidir
+1623982479 simv.daidir

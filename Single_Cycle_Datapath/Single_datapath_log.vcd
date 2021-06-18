@@ -1,5 +1,5 @@
 $date
-	Thu Jun 17 09:05:47 2021
+	Thu Jun 17 19:14:39 2021
 $end
 
 $version
@@ -10,102 +10,125 @@ $timescale
 	1ps
 $end
 
-$comment Csum: 1 06db3e4f2280ea52 $end
+$comment Csum: 1 269ae253970cece3 $end
 
 
-$scope module testbench $end
-$var reg 32 ! instr [31:0] $end
-$var reg 1 " clk $end
+$scope module Single_datapath $end
+$var reg 4 ! Alu_opr [3:0] $end
+$var reg 4 " load_flag [3:0] $end
+$var reg 2 # store_flag [1:0] $end
+$var reg 5 $ Rd_addr [4:0] $end
+$var reg 5 % Rs1_addr [4:0] $end
+$var reg 5 & Rs2_addr [4:0] $end
+$var wire 64 ' Alu_output [63:0] $end
+$var wire 64 ( Rs1_data [63:0] $end
+$var wire 64 ) Rs2_data [63:0] $end
+$var wire 64 * input2_data [63:0] $end
+$var reg 1 + reg_write_en $end
+$var reg 1 , mem_write_en $end
+$var reg 1 - mem_read_en $end
+$var reg 1 . branch_en $end
+$var wire 64 / reg_file_input [63:0] $end
+$var wire 64 0 mem_data_output [63:0] $end
+$var wire 1 1 clk $end
+$var wire 32 2 pc [31:0] $end
+$var wire 32 3 instr [31:0] $end
+$var wire 64 4 branch_addr [63:0] $end
 
-$scope module u1 $end
-$var wire 32 ! instr [31:0] $end
-$var wire 1 " clk $end
-$var reg 4 # Alu_opr [3:0] $end
-$var reg 4 $ load_flag [3:0] $end
-$var reg 2 % store_flag [1:0] $end
-$var reg 5 & Rd_addr [4:0] $end
-$var reg 5 ' Rs1_addr [4:0] $end
-$var reg 5 ( Rs2_addr [4:0] $end
-$var wire 64 ) Alu_output [63:0] $end
-$var wire 64 * Rs1_data [63:0] $end
-$var wire 64 + Rs2_data [63:0] $end
-$var wire 64 , input2_data [63:0] $end
-$var reg 1 - reg_write_en $end
-$var reg 1 . mem_write_en $end
-$var reg 1 / mem_read_en $end
-$var wire 64 0 reg_file_input [63:0] $end
-$var wire 64 1 mem_data_output [63:0] $end
+$scope module U1 $end
+$var reg 1 5 clk $end
+$upscope $end
 
-$scope module u2 $end
-$var wire 32 ! input_inst [31:0] $end
-$var reg 4 # Alu_opr [3:0] $end
-$var reg 4 $ load_flag [3:0] $end
-$var reg 2 % store_flag [1:0] $end
-$var reg 5 & Rd_addr [4:0] $end
-$var reg 5 ' Rs1_addr [4:0] $end
-$var reg 5 ( Rs2_addr [4:0] $end
-$var reg 1 - reg_write_en $end
-$var reg 1 . mem_write_en $end
-$var reg 1 / mem_read_en $end
+
+$scope module U2 $end
+$var wire 1 1 clk $end
+$var wire 1 . branch_en $end
+$var wire 64 4 Alu_output [63:0] $end
+$var reg 64 6 PC [63:0] $end
+$upscope $end
+
+
+$scope module U3 $end
+$var wire 32 2 PC [31:0] $end
+$var reg 32 7 instr [31:0] $end
+$upscope $end
+
+
+$scope module U4 $end
+$var wire 32 3 input_inst [31:0] $end
+$var reg 4 ! Alu_opr [3:0] $end
+$var reg 4 " load_flag [3:0] $end
+$var reg 2 # store_flag [1:0] $end
+$var reg 5 $ Rd_addr [4:0] $end
+$var reg 5 % Rs1_addr [4:0] $end
+$var reg 5 & Rs2_addr [4:0] $end
+$var reg 1 + reg_write_en $end
+$var reg 1 , mem_write_en $end
+$var reg 1 - mem_read_en $end
+$var reg 1 . branch_en $end
 
 $scope function Alu_opr_R $end
-$var reg 4 2 Alu_opr_R [3:0] $end
-$var reg 3 3 func3 [2:0] $end
-$var reg 7 4 func7 [0:6] $end
+$var reg 4 8 Alu_opr_R [3:0] $end
+$var reg 3 9 func3 [2:0] $end
+$var reg 7 : func7 [0:6] $end
 $upscope $end
 
 
 $scope function Alu_opr_I $end
-$var reg 3 5 Alu_opr_I [2:0] $end
-$var reg 3 6 func3 [2:0] $end
+$var reg 3 ; Alu_opr_I [2:0] $end
+$var reg 3 < func3 [2:0] $end
+$upscope $end
+
+
+$scope function Alu_opr_B $end
+$var reg 3 = Alu_opr_B [2:0] $end
+$var reg 3 > func3 [2:0] $end
 $upscope $end
 
 
 $scope function store_format $end
-$var reg 2 7 store_format [1:0] $end
-$var reg 3 8 func3 [2:0] $end
+$var reg 2 ? store_format [1:0] $end
+$var reg 3 @ func3 [2:0] $end
 $upscope $end
 
 
 $scope function load_format $end
-$var reg 3 9 load_format [2:0] $end
-$var reg 3 : func3 [2:0] $end
+$var reg 3 A load_format [2:0] $end
+$var reg 3 B func3 [2:0] $end
 $upscope $end
 
-$upscope $end
-
-
-$scope module u3 $end
-$var wire 1 - Wen $end
-$var wire 5 ' Rs1_addr [4:0] $end
-$var wire 5 ( Rs2_addr [4:0] $end
-$var wire 5 & Rd_addr [4:0] $end
-$var wire 64 0 write_data [63:0] $end
-$var wire 64 * Rs1_data [63:0] $end
-$var wire 64 + Rs2_data [63:0] $end
-$var integer 32 ; i $end
-$upscope $end
-
-
-$scope module u4 $end
-$var wire 4 # Alu_opr [3:0] $end
-$var wire 64 * IP_data1 [63:0] $end
-$var wire 64 , IP_data2 [63:0] $end
-$var reg 64 < OP_data [63:0] $end
 $upscope $end
 
 
 $scope module U5 $end
-$var wire 3 = load_format [2:0] $end
-$var wire 2 % store_format [1:0] $end
-$var wire 1 . mem_write_en $end
-$var wire 1 / mem_read_en $end
-$var wire 64 ) mem_addr [63:0] $end
-$var wire 64 + mem_data_input [63:0] $end
-$var reg 64 > mem_data_output [63:0] $end
-$var integer 32 ? i $end
+$var wire 1 + Wen $end
+$var wire 5 % Rs1_addr [4:0] $end
+$var wire 5 & Rs2_addr [4:0] $end
+$var wire 5 $ Rd_addr [4:0] $end
+$var wire 64 / write_data [63:0] $end
+$var wire 64 ( Rs1_data [63:0] $end
+$var wire 64 ) Rs2_data [63:0] $end
+$var integer 32 C i $end
 $upscope $end
 
+
+$scope module U6 $end
+$var wire 4 ! Alu_opr [3:0] $end
+$var wire 64 ( IP_data1 [63:0] $end
+$var wire 64 * IP_data2 [63:0] $end
+$var reg 64 D OP_data [63:0] $end
+$upscope $end
+
+
+$scope module U7 $end
+$var wire 3 E load_format [2:0] $end
+$var wire 2 # store_format [1:0] $end
+$var wire 1 , mem_write_en $end
+$var wire 1 - mem_read_en $end
+$var wire 64 ' mem_addr [63:0] $end
+$var wire 64 ) mem_data_input [63:0] $end
+$var reg 64 F mem_data_output [63:0] $end
+$var integer 32 G i $end
 $upscope $end
 
 $upscope $end
@@ -114,127 +137,209 @@ $enddefinitions $end
 
 #0
 $dumpvars
-0"
-0/
-0.
-1-
-b0000 #
-bxxx 5
-bxxx 6
-b0000 2
-b000 3
-b0000000 4
-b0000000000000000000001000101011001110001001100000010100110010100 )
-b0000000000000000000001000101011001110001001100000010100110010100 <
-b01001 &
-b10100 '
-b0000000000000000000001000101011001110000000100000010001111010010 *
-b10101 (
-b0000000000000000000000000000000000000001001000000000010111000010 +
-b00000000000000000000011111111111 ?
-bxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx >
-b00000000000000000000000000100000 ;
-b0000000000000000000000000000000000000001001000000000010111000010 ,
-b00000001010110100000010010110011 !
-bxxxx $
-bxxx :
-bxxx 9
-bxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx 1
-b0000000000000000000001000101011001110001001100000010100110010100 0
-bxx %
-bxxx 8
-bxx 7
+05
+x.
+01
+x-
+x,
+x+
+bxxxx !
 bxxx =
+bxxx >
+bxxx ;
+bxxx <
+bxxxx 8
+bxxx 9
+bxxxxxxx :
+bxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx '
+bxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx D
+b0000000000000000000000000000000000000000000000000000000000000000 6
+bxxxxx $
+bxxxxx %
+bxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx (
+bxxxxx &
+bxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx )
+bxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx 7
+b00000000000000000000011111111111 G
+bxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx F
+bxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx 4
+b00000000000000000000000000100000 C
+bxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx *
+bxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx 3
+bxxxx "
+bxxx B
+bxxx A
+bxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx 0
+b00000000000000000000000000000000 2
+bxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx /
+bxx #
+bxxx @
+bxx ?
+bxxx E
 $end
-#5000
-1"
-#10000
-0"
 #15000
-1"
-#20000
-0"
-#25000
-1"
+15
+11
+b0000000000000000000000000000000000000000000000000000000000000100 6
+b00000000000000000000000000000100 2
+b00000001010110100000010010110011 7
+b00000001010110100000010010110011 3
+b000 9
+b0000000 :
+b0000 8
+b10100 %
+b0000000000000000000001000101011001110000000100000010001111010010 (
+b10101 &
+b0000000000000000000000000000000000000001001000000000010111000010 )
+b01001 $
+1+
+0,
+0-
+0.
+b0000 !
+b0000000000000000000000000000000000000001001000000000010111000010 *
+bzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz 4
+b0000000000000000000001000101011001110001001100000010100110010100 D
+b0000000000000000000001000101011001110001001100000010100110010100 '
+b0000000000000000000001000101011001110001001100000010100110010100 /
 #30000
-b00000000000101001000010110010011 !
-0"
-b000 6
-b000 5
-b01001 '
-b0000000000000000000001000101011001110001001100000010100110010100 *
-bzzzzz (
-bxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx +
-b01011 &
-b0000000000000000000000000000000000000000000000000000000000000001 ,
-b0000000000000000000001000101011001110001001100000010100110010101 <
-b0000000000000000000001000101011001110001001100000010100110010101 )
-b0000000000000000000001000101011001110001001100000010100110010101 0
-#35000
-1"
-#40000
-0"
+05
+01
 #45000
-1"
-#50000
-0"
-#55000
-1"
-#60000
-b00001110100101010011100000100011 !
-0"
-b011 8
-b11 7
-b01010 '
-b0000000000000000000000000000000000000000000000000000000000000010 *
-b01001 (
-b0000000000000000000001000101011001110001001100000010100110010100 +
+15
+11
+b0000000000000000000000000000000000000000000000000000000000001000 6
+b00000000000000000000000000001000 2
+b00000000000101001000010010010011 7
+b00000000000101001000010010010011 3
+b0000000000000000000000000000000000000000000000000000000000000001 *
+b000 <
+b000 ;
+b01001 %
+b0000000000000000000001000101011001110001001100000010100110010100 (
 bzzzzz &
-b11 %
+bxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx )
+b0000000000000000000001000101011001110001001100000010100110010101 D
+b0000000000000000000001000101011001110001001100000010100110010101 '
+b0000000000000000000001000101011001110001001100000010100110010101 /
+b0000000000000000000001000101011001110001001100000010100110010101 (
+#60000
+05
+01
+#75000
+15
+11
+b0000000000000000000000000000000000000000000000000000000000001100 6
+b00000000000000000000000000001100 2
+b00001110100101010011100000100011 7
+b00001110100101010011100000100011 3
+b0000000000000000000000000000000000000000000000000000000011110000 *
+b011 @
+b11 ?
+b01010 %
+b0000000000000000000000000000000000000000000000000000000000000010 (
+b01001 &
+b0000000000000000000001000101011001110001001100000010100110010101 )
+bzzzzz $
+b11 #
+0+
+1,
+b0000000000000000000000000000000000000000000000000000000011110010 D
+b0000000000000000000000000000000000000000000000000000000011110010 '
+b0000000000000000000000000000000000000000000000000000000011110010 /
+#90000
+05
+01
+#105000
+15
+11
+b0000000000000000000000000000000000000000000000000000000000010000 6
+b00000000000000000000000000010000 2
+b00001111000001010011001010000011 7
+b00001111000001010011001010000011 3
+b011 B
+b101 A
+bzzzzz &
+bxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx )
+b00101 $
+1+
+0,
+1-
+b0101 "
+b101 E
+bxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx /
+b0000000000000000000001000101011001110001001100000010100110010101 F
+b0000000000000000000001000101011001110001001100000010100110010101 0
+b0000000000000000000001000101011001110001001100000010100110010101 /
+#120000
+05
+01
+#135000
+15
+11
+b0000000000000000000000000000000000000000000000000000000000010100 6
+b00000000000000000000000000010100 2
+b00000010010101001000000101100111 7
+b00000010010101001000000101100111 3
+bxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx *
+b000 >
+b111 =
+b01001 %
+b0000000000000000000001000101011001110001001100000010100110010101 (
+b00101 &
+b0000000000000000000001000101011001110001001100000010100110010101 )
+b0111 !
+0+
 0-
 1.
-b0000000000000000000000000000000000000000000000000000000011110000 ,
-b0000000000000000000000000000000000000000000000000000000011110010 <
-b0000000000000000000000000000000000000000000000000000000011110010 )
-b0000000000000000000000000000000000000000000000000000000011110010 0
-#65000
-1"
-#70000
-0"
-#75000
-1"
-#80000
-0"
-#85000
-1"
-#90000
-b00001111000001010011001010000011 !
-0"
-b011 :
-b101 9
-bzzzzz (
-bxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx +
-b00101 &
-1-
+b000000000000000000000000000000000000000000000000000000000000000x D
+b000000000000000000000000000000000000000000000000000000000000000x '
+b0000000000000000000001000101011001110001001100000010100110010101 *
+b000000000000000000000000000000000000000000000000000000000000000x /
+bxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx 4
+b0000000000000000000000000000000000000000000000000000000000000000 D
+b0000000000000000000000000000000000000000000000000000000000000000 '
+b0000000000000000000000000000000000000000000000000000000000100101 4
+b0000000000000000000000000000000000000000000000000000000000000000 /
+#150000
+05
+01
+#165000
+15
+11
+b0000000000000000000000000000000000000000000000000000000000100101 6
+b00000000000000000000000000100101 2
+b0000000000000000000000000000000000000000000000000000000000110110 4
+b00000000000101001000010110010011 7
+b00000000000101001000010110010011 3
+b0000000000000000000000000000000000000000000000000000000000000001 *
+b0000000000000000000000000000000000000000000000000000010000101010 4
+bzzzzz &
+bxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx )
+b01011 $
+1+
 0.
-1/
-b0101 $
-b101 =
-bxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx 0
-b0000000000000000000001000101011001110001001100000010100110010100 >
-b0000000000000000000001000101011001110001001100000010100110010100 1
-b0000000000000000000001000101011001110001001100000010100110010100 0
-#95000
-1"
-#100000
-0"
-#105000
-1"
-#110000
-0"
-#115000
-1"
-#120000
-0"
-#125000
-1"
+b0000 !
+b0000000000000000000001000101011001110001001100000010100110010110 D
+b0000000000000000000001000101011001110001001100000010100110010110 '
+bzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz 4
+b0000000000000000000001000101011001110001001100000010100110010110 /
+#180000
+05
+01
+#195000
+15
+11
+b0000000000000000000000000000000000000000000000000000000000101001 6
+b00000000000000000000000000101001 2
+bxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx 7
+bxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx 3
+bxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx *
+bzzzzz %
+bxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx (
+bzzzzz $
+bzzzz !
+0+
+bxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx D
+bxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx '
+bxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx /

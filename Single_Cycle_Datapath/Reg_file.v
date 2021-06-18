@@ -8,7 +8,7 @@ integer  i;
 
 //Initilization of Registers with zero value
 initial begin
-  $display("Entered into intial memory loop");
+  //$display("Entered into intial memory loop");
   for(i=0;i<32;i++)begin
     if(i==5'b10100) begin   //Giving some value at x14(hex & 20 in decimal) for the testing purpose
       register[i] = 64'h456701023D2;
@@ -33,7 +33,7 @@ end
 //Checks the Write enable bit then assigns the value to the particular register  
 always @(posedge Wen or write_data )begin
   if(Wen)begin
-   $display("Entered into write loop");
+  // $display("Entered into write loop");
   register[Rd_addr] = write_data;
   $monitor("Rd_addr: %h, mem[Rd_addr]: %h",Rd_addr,register[Rd_addr]);
 end
