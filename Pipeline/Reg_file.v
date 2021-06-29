@@ -28,14 +28,14 @@ end
  assign Rs1_data = register[Rs1_addr];  //gives register value for input 1 of ALU
  assign Rs2_data = register[Rs2_addr];  //gives register value for input 2 of ALU
 always @(Rs1_data or Rs2_data) begin
-  $display("Rs1_data: %d, Rs2_data: %d", Rs1_data,Rs2_data);
+ // $display("Rs1_data: %d, Rs2_data: %d", Rs1_data,Rs2_data);
 end
 //Checks the Write enable bit then assigns the value to the particular register  
 always @(posedge Wen or write_data )begin
   if(Wen)begin
   // $display("Entered into write loop");
   register[Rd_addr] = write_data;
-  $monitor("Rd_addr: %h, mem[Rd_addr]: %h",Rd_addr,register[Rd_addr]);
+//  $monitor("Rd_addr: %h, mem[Rd_addr]: %h",Rd_addr,register[Rd_addr]);
 end
 end
 endmodule

@@ -1,6 +1,7 @@
 module Decoder_64_bit_RISC(
 input [31:0] input_inst,
-output reg [3:0] Alu_opr,load_flag,
+output reg [3:0] Alu_opr,
+output reg [2:0] load_flag,
 output reg [1:0] store_flag,
 output reg [4:0] Rd_addr, Rs1_addr,Rs2_addr,
 output reg reg_write_en,mem_write_en,mem_read_en,branch_en,Rs2_en);
@@ -85,7 +86,7 @@ endfunction
 
 //always @(posedge clk)begin
 always @(input_inst) begin
-  $display("input_inst: %h",input_inst );
+//$display("input_inst: %h",input_inst );
 /*inst_format = inst_type();
 $display("inst_format: %h", inst_format);
 $display("input_inst[6:0] = %h",input_inst[6:0] );*/
@@ -104,7 +105,7 @@ case (input_inst[6:0])
 end
 //I-immediate instructions
 7'b0010011: begin 
-  $display("Entered into immediate loop");
+//$display("Entered into immediate loop");
   Rs1_addr = input_inst[19:15];
   Rs2_addr = 5'bz;
   Rd_addr =  input_inst[11:7];
@@ -149,7 +150,7 @@ end
   //immed[10] = input_inst[7];
   //immed[3:0] = input_inst[11:8];
   //immed[9:4] = input_inst[30:25];
-  $display("Entered into branch loop");
+  //$display("Entered into branch loop");
   Rs1_addr = input_inst[19:15];
   Rs2_addr = input_inst[24:20];
   Alu_opr = Alu_opr_B(input_inst[14:12]);
@@ -171,7 +172,7 @@ default: begin
   branch_en=1'b0;
 end
 endcase
-$display("Alu_opr: %b, Rd_addr: %b , Rs1_addr: %b, Rs2_addr: %b, reg_write_en: %b",Alu_opr, Rd_addr,Rs1_addr,Rs2_addr,reg_write_en);
+//$display("Alu_opr: %b, Rd_addr: %b , Rs1_addr: %b, Rs2_addr: %b, reg_write_en: %b",Alu_opr, Rd_addr,Rs1_addr,Rs2_addr,reg_write_en);
 end
 endmodule
 

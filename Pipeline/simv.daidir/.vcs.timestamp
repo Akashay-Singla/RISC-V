@@ -21,10 +21,10 @@
 datapath.v
 50
 sysc_uni_pwd=/home/015349334@SJSUAD.SJSU.EDU/ee271/RISC_V_Project/Pipeline
-XDG_SESSION_ID=187022
+XDG_SESSION_ID=190125
 XDG_RUNTIME_DIR=/run/user/245455952
 XDG_DATA_DIRS=/home/015349334@SJSUAD.SJSU.EDU/.local/share/flatpak/exports/share:/var/lib/flatpak/exports/share:/usr/local/share:/usr/share
-VSCODE_IPC_HOOK_CLI=/run/user/245455952/vscode-ipc-2809da97-daf4-429a-b0b1-c9fcbce1a4d5.sock
+VSCODE_IPC_HOOK_CLI=/run/user/245455952/vscode-ipc-865b5a25-0861-4e06-b123-98652b672f1b.sock
 VSCODE_GIT_IPC_HANDLE=/run/user/245455952/vscode-git-641e5ddc62.sock
 VSCODE_GIT_ASKPASS_NODE=/home/015349334@SJSUAD.SJSU.EDU/.vscode-server/bin/507ce72a4466fbb27b715c3722558bb15afa9f48/node
 VSCODE_GIT_ASKPASS_MAIN=/home/015349334@SJSUAD.SJSU.EDU/.vscode-server/bin/507ce72a4466fbb27b715c3722558bb15afa9f48/extensions/git/dist/askpass-main.js
@@ -39,8 +39,8 @@ UNAME=/bin/uname
 TOOL_HOME=/apps/synopsys/VCSMX_NEW/linux
 TERM_PROGRAM_VERSION=1.57.1
 TERM_PROGRAM=vscode
-SSH_CONNECTION=10.40.43.58 59382 130.65.179.177 22
-SSH_CLIENT=10.40.43.58 59382 22
+SSH_CONNECTION=10.40.43.70 59303 130.65.179.177 22
+SSH_CLIENT=10.40.43.70 59303 22
 SSH_ASKPASS=/usr/libexec/openssh/gnome-ssh-askpass
 SNPSLMS_LICENSE_FILE=27000@cadence3.engr.sjsu.edu:/apps/synopsys/license/current-license-key
 SFLM_SERVER=cadence3
@@ -72,15 +72,15 @@ BASH_FUNC_module%%=() {  unset _mlshdbg;_ if [ "${MODULES_SILENT_SHELL_DEBUG:-0}
 BASH_ENV=/usr/share/Modules/init/bash
 0
 6
-1624592394 Fetch.v
-1624592394 Reg_file.v
-1624592394 Data_mem.v
-1624592393 Alu.v
-1624672390 decoder.v
-1624683117 datapath.v
+1624920943 Fetch.v
+1624908283 Reg_file.v
+1624907717 Data_mem.v
+1624908345 Alu.v
+1624906940 decoder.v
+1624921509 datapath.v
 4
 0 
 1410372690 /apps/synopsys/VCSMX_NEW/linux/lib/libvirsim.so
 1410372633 /apps/synopsys/VCSMX_NEW/linux/lib/librterrorinf.so
 1410372654 /apps/synopsys/VCSMX_NEW/linux/lib/libsnpsmalloc.so
-1624683122 simv.daidir
+1624921516 simv.daidir

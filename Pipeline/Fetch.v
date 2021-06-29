@@ -15,7 +15,7 @@ always @(posedge clk) begin
     PC <=  PC + 4;
     end
     
-    $display("PC: %d",PC);
+    //$display("PC: %d",PC);
 end
 //always @()
 endmodule
@@ -29,19 +29,19 @@ initial begin
    byte_instr[64'h0000000000000005]<=8'h04;
    byte_instr[64'h0000000000000006]<=8'h5A;
    byte_instr[64'h0000000000000007]<=8'h01;
-/*
+
    //32'h00148493 ADDi x9, x9, 1 add 1 to the value of x9 register
    byte_instr[64'h0000000000000008]<=8'h93;
    byte_instr[64'h0000000000000009]<=8'h84;
    byte_instr[64'h000000000000000A]<=8'h14;
    byte_instr[64'h000000000000000B]<=8'h00;
-    */
-   //32'h00148493 ADDi x9, x9, 1 add 1 to the value of x9 register
+    /*
+   //32'hFFF48493 ADDi x9, x9, -1 add 1 to the value of x9 register
    byte_instr[64'h0000000000000008]<=8'h93;
    byte_instr[64'h0000000000000009]<=8'h84;
    byte_instr[64'h000000000000000A]<=8'hF4;
    byte_instr[64'h000000000000000B]<=8'hFF;
-
+*/
    //32'h0E953823 SD X9,240(x10) doubleword
    byte_instr[64'h000000000000000C]<=8'h23;
    byte_instr[64'h000000000000000D]<=8'h38;
@@ -77,7 +77,7 @@ initial begin
 end
 
 always @(PC)begin
-    $display("PC: %h", PC);
+ //$display("PC: %h", PC);
  instr[7:0] <= byte_instr[PC];
  instr[15:8] <= byte_instr[PC+1];
  instr[23:16] <= byte_instr[PC+2];
@@ -89,7 +89,7 @@ endmodule
 
 module clk_input(output reg clk);
 initial begin
-  $dumpfile("Single_datapath_log.vcd");
+  $dumpfile("datapath_log.vcd");
   $dumpvars;
   #300;
   $finish;
@@ -97,6 +97,6 @@ end
 initial begin
     clk=0;
 end
-always #15 clk= ~clk;
+always #3 clk= ~clk;
 
 endmodule
