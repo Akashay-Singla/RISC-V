@@ -1,5 +1,5 @@
 
-module fetch_RISCV(input clk,branch_en,
+module fetch_RISCV(input clk,branch_en,stall,
 input signed [63:0] branch_pc,
 output reg signed [63:0] PC);
 initial begin
@@ -11,6 +11,9 @@ always @(posedge clk) begin
     if(branch_en == 1) begin
       PC<=branch_pc;
     end
+    else if(stall == 1'b1) begin
+    PC<=PC;
+    end
     else begin
     PC <=  PC + 4;
     end
@@ -20,7 +23,7 @@ end
 //always @()
 endmodule
 
-module instruction_mem(input[31:0] PC,output reg[31:0] instr);
+module instruction_mem(input[63:0] PC,output reg[31:0] instr);
 
 reg[7:0] byte_instr[65535:0];
 initial begin
@@ -46,13 +49,13 @@ initial begin
    byte_instr[64'h000000000000000C]<=8'h23;
    byte_instr[64'h000000000000000D]<=8'h38;
    byte_instr[64'h000000000000000E]<=8'h95;
-   byte_instr[64'h000000000000000F]<=8'hF0;//0E; 
+   byte_instr[64'h000000000000000F]<=8'hF0;//0E; //-240 offset
 
    //32'h0F053283 LD x5,240(x10)  doubleword
    byte_instr[64'h0000000000000010]<=8'h83;
    byte_instr[64'h0000000000000011]<=8'h32;
    byte_instr[64'h0000000000000012]<=8'h05;
-   byte_instr[64'h0000000000000013]<=8'hF1;//0F;
+   byte_instr[64'h0000000000000013]<=8'hF1;//0F;  //-240 offset
 
   /* 32'h02548167 Beq x5,x9,11(hex and 17 in decimal)
    byte_instr[64'h0000000000000014]<=8'h67;
@@ -91,7 +94,7 @@ module clk_input(output reg clk);
 initial begin
   $dumpfile("datapath_log.vcd");
   $dumpvars;
-  #300;
+  #70;
   $finish;
 end
 initial begin

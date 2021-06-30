@@ -12,7 +12,7 @@ initial begin
   end
 end
 
-always @(mem_write_en ==1 or mem_read_en==1) begin
+always @(mem_write_en or mem_read_en) begin
  // $display("mem_addr: %h, mem_data_input %d",mem_addr, mem_data_input);
 //Store instructions
 if(mem_write_en == 1 && mem_read_en == 0)begin
@@ -82,6 +82,9 @@ else if (load_format == 3'b101) begin  //load doubleword
                                                       //            data_mem[mem_addr+4],data_mem[mem_addr+3],data_mem[mem_addr+2],
                                                       //            data_mem[mem_addr+1],data_mem[mem_addr]});
 end
+end
+else if(mem_read_en == 1'b0)begin
+  mem_data_output = 64'hzzzzzzzzzzzzzzzz;
 end
 end
 endmodule
