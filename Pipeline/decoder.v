@@ -153,6 +153,7 @@ end
   //$display("Entered into branch loop");
   Rs1_addr = input_inst[19:15];
   Rs2_addr = input_inst[24:20];
+  Rd_addr = 5'bz;
   Alu_opr = Alu_opr_B(input_inst[14:12]);
   reg_write_en=1'b0;
   mem_write_en=1'b0;

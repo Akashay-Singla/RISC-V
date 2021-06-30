@@ -34,8 +34,8 @@ end
 always @(posedge Wen or write_data )begin
   if(Wen)begin
   // $display("Entered into write loop");
-  register[Rd_addr] = write_data;
-//  $monitor("Rd_addr: %h, mem[Rd_addr]: %h",Rd_addr,register[Rd_addr]);
+  register[Rd_addr] = write_data; 
+  $monitor("Rd_addr: %h, mem[Rd_addr]: %d",Rd_addr,register[Rd_addr]);
 end
 end
 endmodule

@@ -8,7 +8,7 @@ end
 //reg[31:0] PC;
 always @(posedge clk) begin
   //$display("branch_pc: %h",branch_pc);
-    if(branch_en == 1) begin
+    if(branch_en == 1'b1) begin
       PC<=branch_pc;
     end
     else if(stall == 1'b1) begin

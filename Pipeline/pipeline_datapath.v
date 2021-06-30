@@ -16,12 +16,13 @@ wire clk; // clock signal
 wire br_taken,br_en; //br_taken tells whether branch is taken or not. br_en tells that instruction is of branch type
 reg br_taken_buff,br_en_buff, br_en_buff2; //branch taken and enable signals buffers for different pipeline stages
 wire [63:0] br_addr; //br_addr is the address where processor has to jump
+reg [63:0] br_addr_buff;
 wire[63:0] pc; //program counter
 reg [63:0] pc_buff,pc_buff2; //program counter buffers 
 wire[31:0] instr;  //instruction's variable
 reg [31:0] instr_buff; //insruction's buffer
-wire exec_bypass_sig_Rs1, exec_bypass_sig_Rs2, mem_bypass_sig_Rs2,  mem_bypass_sig_Rs1;
-reg exec_bypass_buff_Rs1, exec_bypass_buff_Rs2, mem_bypass_buff_Rs1, mem_bypass_buff_Rs2;
+wire exec_bypass_sig_Rs1, exec_bypass_sig_Rs2, mem_bypass_sig_Rs2,  mem_bypass_sig_Rs1, wrb_bypass_sig_Rs1,wrb_bypass_sig_Rs2;
+reg exec_bypass_buff_Rs1, exec_bypass_buff_Rs2, mem_bypass_buff_Rs1, mem_bypass_buff_Rs2, wrb_bypass_sig_Rs1_buff, wrb_bypass_sig_Rs2_buff;
 wire stall;
 
 wire signed[63:0] Alu_output; //ALU output variable
@@ -56,12 +57,18 @@ reg signed [11:0] imm_val_buff; //immediate value buffer
 //Fetching stage
 
 
-  fetch_RISCV U2(clk,(br_taken_buff == 1'b0 && br_en_buff2==1),stall,br_addr,pc);
+  fetch_RISCV U2(clk,((br_taken_buff == 1'b0 && br_en_buff2==1'b1)? 1'b1:1'b0),stall,br_addr_buff,pc);
   instruction_mem U3(pc,instr);
   //IF/ID pipeline register
 always @(posedge clk) begin
    pc_buff <= pc;
-   instr_buff <= instr;
+   if(stall == 1'b1) begin
+     instr_buff <= instr_buff;
+   end
+   else begin
+      instr_buff <= instr;
+   end
+  
    $display ("2nd stage: pc_buff: %h,instr_buff: %h", pc_buff,instr_buff);
 end
 
@@ -69,9 +76,9 @@ end
 // Decode stage
 /*Decode the instruction and fetch the ALU operation, load instruction type, store instruction type, destination register address, Input 1 & 2's register addresses,
   Register file write enable, data memory write enable, data memory read enable*/
-  Decoder_64_bit_RISC U4(((stall == 1'b1) ? 32'h00000000:instr_buff),Alu_opr,load_opr,store_opr,Rd_addr,Rs1_addr,Rs2_addr,reg_wr_en,mem_wr_en,mem_rd_en,br_en,Rs2_en);
+  Decoder_64_bit_RISC U4(instr_buff,Alu_opr,load_opr,store_opr,Rd_addr,Rs1_addr,Rs2_addr,reg_wr_en,mem_wr_en,mem_rd_en,br_en,Rs2_en);
 //Fetch the data value from register file for input data 1 and input data 2
-  Reg_file U5(reg_wr_en,Rs1_addr,Rs2_addr,Rd_addr_buff3,reg_file_input,Rs1_data,Rs2_data);
+  Reg_file U5(reg_wr_en_buff3,Rs1_addr,Rs2_addr,Rd_addr_buff3,reg_file_input,Rs1_data,Rs2_data);
 
 //fetching of immediate value
  assign imm_val = (instr_buff[6:0] == 7'b0010011 || instr_buff[6:0] == 7'b0000011 )? instr_buff[31:20]: //I-type & L-Load type instruction's immediate value
@@ -82,12 +89,14 @@ end
  assign exec_bypass_sig_Rs1 = ((Rs1_addr === Rd_addr_buff) && (mem_wr_en_buff === 1'b0) && (mem_rd_en_buff === 1'b0)) ? 1'b1: 1'b0;
  assign exec_bypass_sig_Rs2 = ((Rs2_addr === Rd_addr_buff) && (mem_wr_en_buff === 1'b0) && (mem_rd_en_buff === 1'b0)) ? 1'b1: 1'b0;
  assign mem_bypass_sig_Rs1 =  ((Rs1_addr === Rd_addr_buff2) && (mem_wr_en_buff2 === 1'b0) && (mem_rd_en_buff2 === 1'b1)) ? 1'b1 : 1'b0;
- assign mem_bypass_sig_Rs2 =  ((Rs2_addr == Rd_addr_buff2) && (mem_wr_en_buff2 === 1'b0) && (mem_rd_en_buff2 === 1'b1)) ? 1'b1 : 1'b0;
+ assign mem_bypass_sig_Rs2 =  ((Rs2_addr === Rd_addr_buff2) && (mem_wr_en_buff2 === 1'b0) && (mem_rd_en_buff2 === 1'b1)) ? 1'b1 : 1'b0;
+ assign wrb_bypass_sig_Rs1 = ((Rs1_addr === Rd_addr_buff3) && reg_wr_en_buff3 == 1'b1)? 1'b1 : 1'b0;
+ assign wrb_bypass_sig_Rs2 = (Rs2_addr === Rd_addr_buff3 && reg_wr_en_buff3 == 1'b1)? 1'b1 : 1'b0;
 assign stall = (((Rs1_addr == Rd_addr_buff) || (Rs2_addr == Rd_addr_buff)) && (mem_rd_en_buff == 1'b1 && mem_wr_en_buff == 1'b0))? 1'b1 : 1'b0;
 
   always @(posedge clk) begin
   if(stall == 1'b1) begin
-    Alu_opr_buff <= Alu_opr_buff;//Alu_opr;
+    Alu_opr_buff <= 4'hf;//Alu_opr;
   end
   else begin
      Alu_opr_buff <= Alu_opr;
@@ -110,16 +119,24 @@ assign stall = (((Rs1_addr == Rd_addr_buff) || (Rs2_addr == Rd_addr_buff)) && (m
      mem_bypass_buff_Rs1 <= mem_bypass_sig_Rs1; 
      exec_bypass_buff_Rs2 <= exec_bypass_sig_Rs2;
      mem_bypass_buff_Rs2 <= mem_bypass_sig_Rs2;
-     $display("3rd stage:\n stall: %b,Rs2_en_buff: %b,Alu_opr: %h,Alu_opr_buff: %h,Rs1_data_buff: %d,Rs2_data_buff: %d,imm_val_buff: %d,Rd_addr: ",stall, Rs2_en_buff,Alu_opr,
+     wrb_bypass_sig_Rs1_buff <= wrb_bypass_sig_Rs1;
+     wrb_bypass_sig_Rs2_buff <= wrb_bypass_sig_Rs2;
+     
+     $display("3rd stage:\n stall: %b,Rs2_en_buff: %b,Alu_opr_buff: %h,Rs1_data_buff: %d,Rs2_data_buff: %d,imm_val_buff: %d,Rd_addr_buff: ",stall, Rs2_en_buff,
                 Alu_opr_buff, Rs1_data_buff, Rs2_data_buff, imm_val_buff, Rd_addr_buff);
+                $display("Rs1_addr: %h, Rs2_addr: %h, pc_buff2: %h",Rs1_addr, Rs2_addr, pc_buff2 );
   end
 
   //Assign the 2nd input to ALU as per the type of instruction
-  assign input1_data = (exec_bypass_buff_Rs1 == 1'b1 && mem_bypass_buff_Rs1 == 1'b0) ? Alu_output_buff : (exec_bypass_buff_Rs1 == 1'b0 && mem_bypass_buff_Rs1 == 1'b1) ? mem_data_output_buff : Rs1_data_buff;
-  assign input2_data = (Rs2_en_buff == 1'b1) ? ((exec_bypass_buff_Rs2 == 1'b1 && mem_bypass_buff_Rs2 == 1'b0) ? Alu_output_buff : (mem_bypass_buff_Rs2 == 1'b1 && exec_bypass_buff_Rs2 == 1'b0) ? mem_data_output_buff : Rs2_data_buff) : //R-type & branch instruction's register value
+  assign input1_data = (exec_bypass_buff_Rs1 == 1'b1 && mem_bypass_buff_Rs1 == 1'b0 && wrb_bypass_sig_Rs1_buff == 1'b0) ? Alu_output_buff:
+                       (exec_bypass_buff_Rs1 == 1'b0 && mem_bypass_buff_Rs1 == 1'b1 && wrb_bypass_sig_Rs2_buff == 1'b0) ? mem_data_output_buff:
+                       (exec_bypass_buff_Rs1 == 1'b0 && mem_bypass_buff_Rs1 == 1'b0 && wrb_bypass_sig_Rs2_buff == 1'b1)? reg_file_input : Rs1_data_buff;
+  assign input2_data = (Rs2_en_buff == 1'b1) ? ((exec_bypass_buff_Rs2 == 1'b1 && mem_bypass_buff_Rs2 == 1'b0  && wrb_bypass_sig_Rs1_buff == 1'b0) ? Alu_output_buff:
+                       (mem_bypass_buff_Rs2 == 1'b1 && exec_bypass_buff_Rs2 == 1'b0 && wrb_bypass_sig_Rs1_buff == 1'b0) ? mem_data_output_buff:
+                       (mem_bypass_buff_Rs2 == 1'b0 && exec_bypass_buff_Rs2 == 1'b0 && wrb_bypass_sig_Rs1_buff == 1'b1) ? reg_file_input :Rs2_data_buff) : //R-type & branch instruction's register value
                         ((sign_bit_buff == 1'b1)?{52'hFFFFFFFFFFFFF,imm_val_buff}
                               :{52'h0000000000000,imm_val_buff});//determine +ve and -ve number of I-type & L-Load type instruction's immediate value
-  assign pc_offset = (sign_bit_buff == 1'b1)? {51'hFFFFFFFFFFFFF,imm_val_buff,1'b0} : {51'h0000000000000,imm_val_buff,1'b0};
+  assign pc_offset = (sign_bit_buff == 1'b1)? {48'hFFFFFFFFFFFF,3'b111,imm_val_buff,1'b0} : {48'h000000000000,3'b000,imm_val_buff,1'b0};
   assign data_store_mem = (exec_bypass_buff_Rs2 == 1'b1 && Rs2_en_buff == 1'b0) ? Alu_output_buff : Rs2_data_buff;
   assign br_addr = pc_buff2 + pc_offset;
   //ALU performs the operation as per the instruction
@@ -134,11 +151,13 @@ assign stall = (((Rs1_addr == Rd_addr_buff) || (Rs2_addr == Rd_addr_buff)) && (m
    data_store_mem_buff <= data_store_mem;
    br_en_buff2 <= br_en_buff;
    br_taken_buff <= br_taken;
+   br_addr_buff <= br_addr;
    reg_wr_en_buff2 <= reg_wr_en_buff;
    Rd_addr_buff2 <= Rd_addr_buff;
 
 $display ("4th Stage: \n mem_rd_en: %b,mem_wr_en: %b, br_en_buff2: %b, br_taken_buff: %b,Alu_output_buff: %d,data_store_mem_buff: %d,Rd_addr_buff2: %h", 
                          mem_rd_en_buff2, mem_wr_en_buff2,br_en_buff2, br_taken_buff,Alu_output_buff,data_store_mem_buff, Rd_addr_buff2);
+$display ("input1_data: %d, input2_data: %d, pc_offset: %d, br_addr_buff: %h",input1_data,input2_data, pc_offset, br_addr_buff);
  end
   
   //Data memory is of 2047 x 8 means 8-bit as RISC V has byte addressable memory.
@@ -150,7 +169,7 @@ always @(posedge clk) begin
    mem_wr_en_buff3 <= mem_wr_en_buff2;
    reg_wr_en_buff3 <= reg_wr_en_buff2;
    Rd_addr_buff3 <= Rd_addr_buff2;
-   $display("5th stage: \n mem_data_output_buff: %d,Alu_output_buff2: %d ,Rd_addr_buff3: %h", mem_data_output_buff,Alu_output_buff2, Rd_addr_buff3);
+   $display("5th stage: \n mem_wr_en_buff3: %b,reg_wr_en_buff3: %b, mem_data_output_buff: %d,Alu_output_buff2: %d ,Rd_addr_buff3: %h",mem_wr_en_buff3, reg_wr_en_buff3 , mem_data_output_buff,Alu_output_buff2, Rd_addr_buff3);
    $display("------------------------------------------------------------------------------------------------------------------------------");
 end
   //This is a mux having two inputs with one select line.It provides the data memory output if instruction is load else provides the alu output to the register file 
