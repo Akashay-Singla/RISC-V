@@ -1,4 +1,4 @@
-module Reg_file(input Wen1,Wen2 
+module Reg_file(input Wen1,Wen2, 
 input [4:0] Rs1_addr1,Rs2_addr1,Rd_addr1,Rs1_addr2,Rs2_addr2,Rd_addr2,
 input [63:0] write_data1,write_data2,
 output [63:0] Rs1_data1,Rs2_data1,Rs1_data2,Rs2_data2);
