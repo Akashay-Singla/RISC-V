@@ -83,11 +83,6 @@ end
 end
 //Branch Instruction
 7'b1100111: begin
-  //immed[11] = input_inst[31];
-  //immed[10] = input_inst[7];
-  //immed[3:0] = input_inst[11:8];
-  //immed[9:4] = input_inst[30:25];
-  //$display("Entered into branch loop");
   Rs1_addr = input_inst[19:15];
   Rs2_addr = input_inst[24:20];
   Rd_addr = 5'bz;
