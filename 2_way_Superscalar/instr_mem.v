@@ -1,29 +1,5 @@
 
-module fetch_RISCV(input clk,branch_en,stall,
-input signed [63:0] branch_pc,
-output reg signed [63:0] PC);
-initial begin
-    PC=32'b0;
-end
-//reg[31:0] PC;
-always @(posedge clk) begin
-  //$display("branch_pc: %h",branch_pc);
-    if(branch_en == 1'b1) begin
-      PC<=branch_pc;
-    end
-    else if(stall == 1'b1) begin
-    PC<=PC;
-    end
-    else begin
-    PC <=  PC + 8;
-    end
-    
-    //$display("PC: %d",PC);
-end
-//always @()
-endmodule
-
-module instruction_mem(input[63:0] PC,output reg[31:0] instr1, instr2);
+module instruction_mem(input[63:0] PC,PC4,output reg[31:0] instr1 , instr2);
 
 reg[7:0] byte_instr[65535:0];
 initial begin
@@ -85,10 +61,11 @@ always @(PC)begin
  instr1[15:8] <= byte_instr[PC+1];
  instr1[23:16] <= byte_instr[PC+2];
  instr1[31:24] <= byte_instr[PC+3];
- instr2[7:0] <= byte_instr[PC+4];
- instr2[15:8] <= byte_instr[PC+5];
- instr2[23:16] <= byte_instr[PC+6];
- instr2[31:24] <= byte_instr[PC+7];
+
+ instr2[7:0] <= byte_instr[PC4];
+ instr2[15:8] <= byte_instr[PC4+1];
+ instr2[23:16] <= byte_instr[PC4+2];
+ instr2[31:24] <= byte_instr[PC4+3];
 // $display("instr[31:0]: %h",instr);
 end
 endmodule
@@ -107,3 +84,33 @@ end
 always #3 clk= ~clk;
 
 endmodule
+
+
+/*
+module fetch_RISCV(input clk,branch_en,stall,
+input signed [63:0] branch_pc,
+output reg signed [63:0] PC,PC4);
+initial begin
+    PC=32'b0;
+end
+//reg[31:0] PC;
+always @(posedge clk) begin
+  //$display("branch_pc: %h",branch_pc);
+    if(branch_en == 1'b1) begin
+      PC<=branch_pc;
+      PC4 <= branch_pc + 4; 
+    end
+    else if(stall == 1'b1) begin
+    PC<=PC;
+    PC4<=PC4;
+    end
+    else begin
+    PC <=  PC + 4;
+    PC4 <= PC4 + 4;
+    end
+    
+    //$display("PC: %d",PC);
+end
+//always @()
+endmodule
+*/
