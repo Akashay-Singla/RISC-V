@@ -18,7 +18,7 @@ reg br_taken_buff,br_en1_buff, br_en1_buff2, br_en2_buff, br_en2_buff2; //branch
 wire [63:0] br_addr; //br_addr is the address where processor has to jump
 reg [63:0] br_addr_buff;
 reg[63:0] pc,pc4; //program counter
-reg [63:0] pc_buff,pc_buff2, pc4_buff,pc4_buff2; //program counter buffers 
+reg [63:0] pc_buff,pc_buff2, pc_buff3, pc_buff4,pc4_buff,pc4_buff2,pc4_buff3, pc4_buff4 ; //program counter buffers 
 wire[31:0] instr1,instr2, instr_inputA,instr_inputB;  //instruction's variable
 reg [31:0] instr1_buff,instr2_buff ; //insruction1 and instruction 2 buffer
 wire exec_bypass1_Rs1, exe_bypass1_Rs2, mem_bypass1_Rs2,  mem_bypass1_Rs1, wrb_bypass1_Rs1,wrb_bypass1_Rs2;
@@ -99,6 +99,7 @@ end
   //IF/ID pipeline register
 always @(posedge clk) begin
    pc_buff <= pc;
+   pc4_buff <= pc4;
   if(are_instrs_br) begin
      instr1_buff <= instr2_buff;
      instr2_buff <= instr1;
@@ -142,37 +143,59 @@ assign instr_inputB = (instr1_buff[6:0] == 7'b0000011 || instr1_buff[6:0] == 7'b
                    12'bz;
  assign sign_bit1 = instr1_buff[31];
  assign sign_bit2 = instr2_buff[31];
- assign exec_bypass1_Rs1 = (Rs1_addr1 === Rd_addr1_buff) ? 1'b1: 1'b0;
- assign exec_bypass1_Rs2 = (Rs2_addr1 === Rd_addr1_buff) ? 1'b1: 1'b0;
- assign mem_bypass1_Rs1 = (Rs1_addr1 === Rd_addr1_buff2)? 1'b1: 1'b0;
- assign mem_bypass1_Rs2 = (Rs2_addr1 === Rd_addr1_buff2)? 1'b1: 1'b0;
- assign wrb_bypass1_Rs1 = ((Rs1_addr1 === Rd_addr1_buff3) && reg_wr_en1_buff3 == 1'b1)? 1'b1 : 1'b0;
- assign wrb_bypass1_Rs2 = (Rs2_addr1 === Rd_addr1_buff3 && reg_wr_en1_buff3 == 1'b1)? 1'b1 : 1'b0;
+ assign exec_bypass1_Rs1 = ((Rs1_addr1 === Rd_addr1_buff) &&
+                    (((Rs1_addr1 === Rd_addr2_buff)&&(pc_buff2 > pc4_buff2))||(Rs1_addr1 != Rd_addr2_buff))) ? 1'b1: 1'b0;
+ assign exec_bypass1_Rs2 = ((Rs2_addr1 === Rd_addr1_buff) &&
+                        (((Rs2_addr1 === Rd_addr2_buff)&&(pc_buff2 > pc4_buff2))||(Rs2_addr1 != Rd_addr2_buff)))  ? 1'b1: 1'b0;
+ assign mem_bypass1_Rs1 = ((Rs1_addr1 === Rd_addr1_buff2) && (exec_bypass1_Rs1 == 1'b0) && (exec_intr_bp1_Rs1 == 1'b0) &&
+                    (((Rs1_addr1 === Rd_addr2_buff2)&&(pc_buff3 > pc4_buff3))||(Rs1_addr1 != Rd_addr2_buff2)))? 1'b1: 1'b0;
+ assign mem_bypass1_Rs2 = ((Rs2_addr1 === Rd_addr1_buff2) && (exe_bypass1_Rs2 == 1'b0) &&  (exec_intr_bp1_Rs2 == 1'b0) &&
+                          (((Rs2_addr1 === Rd_addr2_buff2)&&(pc_buff3 > pc4_buff3))||(Rs2_addr1 != Rd_addr2_buff2)))? 1'b1: 1'b0;
+ assign wrb_bypass1_Rs1 = ((Rs1_addr1 === Rd_addr1_buff3) && (exec_bypass1_Rs1 == 1'b0)&&(mem_bypass1_Rs1==1'b0)&& (exec_intr_bp1_Rs1 == 1'b0) && 
+                           (((Rs2_addr1 === Rd_addr2_buff3)&&(pc_buff4 > pc4_buff4))||(Rs2_addr1 != Rd_addr2_buff3)))? 1'b1 : 1'b0;
+ assign wrb_bypass1_Rs2 = ((Rs2_addr1 === Rd_addr1_buff3 && reg_wr_en1_buff3 == 1'b1) && (exec_bypass1_Rs2 == 1'b0)&&(mem_bypass1_Rs2==1'b0)&& (exec_intr_bp1_Rs2 == 1'b0) && 
+                 (((Rs2_addr1 === Rd_addr2_buff3)&&(pc_buff4 > pc4_buff4))||(Rs2_addr1 != Rd_addr2_buff3)))  ? 1'b1 : 1'b0;
 
 
- assign exec_bypass2_Rs1 = ((Rs1_addr2 === Rd_addr2_buff) && (mem_wr_en2_buff === 1'b0) && (mem_rd_en2_buff === 1'b0)) ? 1'b1: 1'b0;
- assign exec_bypass2_Rs2 = ((Rs2_addr2 === Rd_addr2_buff) && (mem_wr_en2_buff === 1'b0) && (mem_rd_en2_buff === 1'b0)) ? 1'b1: 1'b0;
- assign mem_bypass2_Rs1 =  ((Rs1_addr2 === Rd_addr2_buff2) && (mem_wr_en2_buff2 === 1'b0)) ? 1'b1 : 1'b0;
- assign mem_bypass2_Rs2 =  ((Rs2_addr2 === Rd_addr2_buff2) && (mem_wr_en2_buff2 === 1'b0)) ? 1'b1 : 1'b0;
- assign wrb_bypass2_Rs1 = ((Rs1_addr2 === Rd_addr2_buff3) && reg_wr_en2_buff3 == 1'b1)? 1'b1 : 1'b0;
- assign wrb_bypass2_Rs2 = (Rs2_addr2 === Rd_addr2_buff3 && reg_wr_en2_buff3 == 1'b1)? 1'b1 : 1'b0;
+ assign exec_bypass2_Rs1 = ((Rs1_addr2 === Rd_addr2_buff) && (mem_wr_en2_buff === 1'b0) && (mem_rd_en2_buff === 1'b0) &&
+                          (((Rs1_addr2 === Rd_addr1_buff)&&(pc_buff2 < pc4_buff2))||(Rs1_addr2 != Rd_addr1_buff)))  ? 1'b1: 1'b0;
+ assign exec_bypass2_Rs2 = ((Rs2_addr2 === Rd_addr2_buff) && (mem_wr_en2_buff === 1'b0) && (mem_rd_en2_buff === 1'b0) && 
+                            (((Rs2_addr2 === Rd_addr1_buff)&&(pc_buff2 < pc4_buff2))||(Rs2_addr2 != Rd_addr1_buff))) ? 1'b1: 1'b0;
+ assign mem_bypass2_Rs1 =  ((Rs1_addr2 === Rd_addr2_buff2) && (mem_wr_en2_buff2 === 1'b0) && (exec_bypass2_Rs1 == 1'b0) && (exec_intr_bp2_Rs1 == 1'b0) &&
+                        (((Rs1_addr2 === Rd_addr1_buff2)&&(pc_buff3 < pc4_buff3))||(Rs1_addr2 != Rd_addr1_buff2))) ? 1'b1 : 1'b0;
+ assign mem_bypass2_Rs2 =  ((Rs2_addr2 === Rd_addr2_buff2) && (mem_wr_en2_buff2 === 1'b0) && (exec_bypass2_Rs2 == 1'b0) && (exec_intr_bp2_Rs2 == 1'b0) &&
+                      (((Rs1_addr2 === Rd_addr1_buff2)&&(pc_buff3 < pc4_buff3))||(Rs1_addr2 != Rd_addr1_buff2))) ? 1'b1 : 1'b0;
+ assign wrb_bypass2_Rs1 = ((Rs1_addr2 === Rd_addr2_buff3) && (reg_wr_en2_buff3 == 1'b1)&& (exec_bypass2_Rs1 == 1'b0)&&(mem_bypass2_Rs1==1'b0)&& (exec_intr_bp2_Rs1 == 1'b0) && 
+                           (((Rs2_addr2 === Rd_addr1_buff3)&&(pc_buff4 < pc4_buff4))||(Rs2_addr2 != Rd_addr1_buff3)) )? 1'b1 : 1'b0;
+ assign wrb_bypass2_Rs2 = ((Rs2_addr2 === Rd_addr2_buff3 && (reg_wr_en2_buff3 == 1'b1) && (exec_bypass2_Rs2 == 1'b0)&&(mem_bypass2_Rs2 ==1'b0)&& (exec_intr_bp2_Rs2 == 1'b0) &&
+                           (((Rs2_addr2 === Rd_addr1_buff3)&&(pc_buff4 < pc4_buff4))||(Rs2_addr2 != Rd_addr1_buff3)))? 1'b1 : 1'b0;
 
 
 
- assign exec_intr_bp2_Rs1 = (Rs1_addr2 === Rd_addr1_buff) ? 1'b1 : 1'b0;
- assign exec_intr_bp2_Rs2 = (Rs2_addr2 === Rd_addr1_buff) ? 1'b1 : 1'b0;
- assign mem_intr_bp2_Rs1 = (Rs1_addr2 === Rd_addr1_buff2) ? 1'b1: 1'b0;
- assign mem_intr_bp2_Rs2 = (Rs2_addr2 === Rd_addr1_buff2) ? 1'b1: 1'b0;
- assign wrb_intr_bp2_Rs1 = (Rs1_addr2 === Rd_addr1_buff3) ? 1'b1: 1'b0;
- assign wrb_intr_bp2_Rs2 = (Rs2_addr2 === Rd_addr1_buff3) ? 1'b1: 1'b0;
+ assign exec_intr_bp2_Rs1 = ((Rs1_addr2 === Rd_addr1_buff)&& (exec_bypass2_Rs1 == 1'b0)) ? 1'b1 : 1'b0;
+ assign exec_intr_bp2_Rs2 = ((Rs2_addr2 === Rd_addr1_buff)&& (exec_bypass2_Rs1 == 1'b0)) ? 1'b1 : 1'b0;
+ assign mem_intr_bp2_Rs1 = ((Rs1_addr2 === Rd_addr1_buff2)&&(exec_intr_bp2_Rs1 == 1'b0) && (exec_bypass2_Rs1 == 1'b0)&&
+                           (mem_bypass1_Rs2 == 1'b0)) ? 1'b1: 1'b0;
+ assign mem_intr_bp2_Rs2 =((Rs2_addr2 === Rd_addr1_buff2)&& (exec_intr_bp2_Rs2 == 1'b0) && (exec_bypass2_Rs2 == 1'b0)&&
+                           (mem_bypass2_Rs2 == 1'b0)) ? 1'b1: 1'b0;
+ assign wrb_intr_bp2_Rs1 = (Rs1_addr2 === Rd_addr1_buff3) && (exec_intr_bp2_Rs1 == 1'b0)
+                            && (exec_bypass1_Rs1 == 1'b0)&& (mem_bypass1_Rs1 == 1'b0) && (wrb_bypass1_Rs1 == 1'b0) ? 1'b1: 1'b0;
+ assign wrb_intr_bp2_Rs2 = ((Rs2_addr2 === Rd_addr1_buff3) &&(exec_intr_bp1_Rs2 == 1'b0)
+                            && (exec_bypass2_Rs2 == 1'b0)&& (mem_bypass2_Rs2 == 1'b0) && (wrb_bypass2_Rs2 == 1'b0)) ? 1'b1: 1'b0;
 
 
- assign exec_intr_bp1_Rs1 =((Rs1_addr1 === Rd_addr1_buff) && (mem_wr_en2_buff === 1'b0) && (mem_rd_en2_buff === 1'b0)) ? 1'b1 : 1'b0;
- assign exec_intr_bp1_Rs2 =((Rs2_addr1 === Rd_addr1_buff) && (mem_wr_en2_buff === 1'b0) && (mem_rd_en2_buff === 1'b0))? 1'b1 : 1'b0;
- assign mem_intr_bp1_Rs1 = ((Rs1_addr1 === Rd_addr1_buff2) && (mem_wr_en2_buff2 === 1'b0)) ? 1'b1: 1'b0;
- assign mem_intr_bp1_Rs2 = ((Rs2_addr1 === Rd_addr1_buff2) && (mem_wr_en2_buff === 1'b0)) ? 1'b1: 1'b0;
- assign wrb_intr_bp1_Rs1 = ((Rs1_addr1 === Rd_addr1_buff3) && reg_wr_en2_buff3 == 1'b1)? 1'b1: 1'b0;
- assign wrb_intr_bp1_Rs2 = ((Rs2_addr1 === Rd_addr1_buff3) && reg_wr_en2_buff3 == 1'b1)? 1'b1: 1'b0;
+ assign exec_intr_bp1_Rs1 =((Rs1_addr1 === Rd_addr2_buff) && (mem_wr_en2_buff === 1'b0) && (mem_rd_en2_buff === 1'b0) &&
+                              (exec_bypass1_Rs1 == 1'b0)) ? 1'b1 : 1'b0;
+ assign exec_intr_bp1_Rs2 =((Rs2_addr1 === Rd_addr2_buff) && (mem_wr_en2_buff === 1'b0) && (mem_rd_en2_buff === 1'b0) &&
+                            (exec_bypass1_Rs2 == 1'b0)) ? 1'b1 : 1'b0;
+ assign mem_intr_bp1_Rs1 = ((Rs1_addr1 === Rd_addr2_buff2) && (mem_wr_en2_buff2 === 1'b0) && (exec_intr_bp1_Rs1 == 1'b0) && (exec_bypass1_Rs1 == 1'b0)&&
+                           (mem_bypass1_Rs1 == 1'b0)) ? 1'b1: 1'b0;
+ assign mem_intr_bp1_Rs2 = ((Rs2_addr1 === Rd_addr2_buff2) && (mem_wr_en2_buff === 1'b0) && (exec_intr_bp1_Rs2 == 1'b0)
+                            && (exec_bypass1_Rs2 == 1'b0)&& (mem_bypass1_Rs2 == 1'b0))? 1'b1: 1'b0;
+ assign wrb_intr_bp1_Rs1 = ((Rs1_addr1 === Rd_addr2_buff3) && (reg_wr_en2_buff3 == 1'b1) && (exec_intr_bp1_Rs1 == 1'b0)
+                            && (exec_bypass1_Rs1 == 1'b0)&& (mem_bypass1_Rs1 == 1'b0) && (wrb_bypass1_Rs1 == 1'b0) )? 1'b1: 1'b0;
+ assign wrb_intr_bp1_Rs2 = ((Rs2_addr1 === Rd_addr2_buff3) && (reg_wr_en2_buff3 == 1'b1) && (exec_intr_bp1_Rs2 == 1'b0) && 
+                          (exec_bypass1_Rs2 == 1'b0) && (mem_bypass1_Rs2 == 1'b0) && (wrb_bypass1_Rs2 == 1'b0))? 1'b1: 1'b0;
 
 
  assign are_instrs_ld_sd = ((instr1_buff ==  7'b0000011 && instr2_buff == 7'b0000011) || (instr1_buff == 7'b0100011 && instr2_buff == 7'b0100011 ))? 1'b1: 1'b0; //if both instructions are either load or store instructions
@@ -275,6 +298,9 @@ assign instr_inputB = (instr1_buff[6:0] == 7'b0000011 || instr1_buff[6:0] == 7'b
   ALU_64bit_B U6B(Alu_opr2_buff,input1_data2,input2_data2,Alu_op2);
 
  always @(posedge clk) begin
+  pc4_buff3 = pc4_buff2;
+  pc_buff3 = pc_buff2;
+
    Alu_op1_buff <= Alu_op1;
    reg_wr_en1_buff2 <= reg_wr_en1_buff;
    Rd_addr1_buff2 <= Rd_addr1_buff;
@@ -297,6 +323,9 @@ $display ("input1_data: %d, input2_data: %d, pc_offset: %d, br_addr_buff: %h",in
   //Data memory is of 2047 x 8 means 8-bit as RISC V has byte addressable memory.
   data_memory U7(load_opr2_buff2,store_opr2_buff2,mem_wr_en2_buff2,mem_rd_en2_buff2,Alu_op2_buff,data_store_mem_buff,mem_data_output);
 always @(posedge clk) begin
+
+   pc4_buff4 = pc4_buff3;
+   pc_buff4 = pc_buff3;
    Alu_op1_buff2 <= Alu_op1_buff;
    reg_wr_en1_buff3 <= reg_wr_en1_buff2;
    Rd_addr1_buff3 <= Rd_addr1_buff2;
