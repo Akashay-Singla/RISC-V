@@ -2,7 +2,7 @@ module Decoder_A(
 input [31:0] input_inst,
 output reg [3:0] Alu_opr,
 output reg [4:0] Rd_addr, Rs1_addr,Rs2_addr,
-output reg reg_write_en,branch_en);
+output reg reg_write_en,branch_en, Rs2_en);
 
 
 //This function finds the sub instruction of R-type
@@ -69,6 +69,7 @@ case (input_inst[6:0])
   Rd_addr =  input_inst[11:7];
   reg_write_en=1'b1;
   branch_en = 1'b0;
+  Rs2_en = 1'b1;
   Alu_opr = Alu_opr_R(input_inst[14:12],input_inst[31:25]);
 end
 //I-immediate instructions
@@ -79,6 +80,7 @@ end
   Rd_addr =  input_inst[11:7];
   reg_write_en=1'b1;
   branch_en = 1'b0;
+  Rs2_en = 1'b0;
   Alu_opr = Alu_opr_I(input_inst[14:12]);
 end
 //Branch Instruction
@@ -89,6 +91,7 @@ end
   Alu_opr = Alu_opr_B(input_inst[14:12]);
   reg_write_en=1'b0;
   branch_en = 1'b1;
+  Rs2_en =1'b1;
 end
 default: begin
   Rs1_addr= 5'bz;
@@ -96,8 +99,9 @@ default: begin
   Rd_addr = 5'bz;
  //immed = 12'bz;
   Alu_opr = 4'bz;
-  reg_write_en=1'b0;
-  branch_en=1'b0;
+  reg_write_en=1'bz;
+  branch_en=1'bz;
+  Rs2_en =1'bz;
 end
 endcase
 //$display("Alu_opr: %b, Rd_addr: %b , Rs1_addr: %b, Rs2_addr: %b, reg_write_en: %b",Alu_opr, Rd_addr,Rs1_addr,Rs2_addr,reg_write_en);

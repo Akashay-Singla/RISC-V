@@ -4,16 +4,16 @@ module instruction_mem(input[63:0] PC,PC4,output reg[31:0] instr1 , instr2);
 reg[7:0] byte_instr[65535:0];
 initial begin
    //32'h015A04B3  ADD X9, X14 ,X15
-   byte_instr[64'h0000000000000004]<=8'hB3;
-   byte_instr[64'h0000000000000005]<=8'h04;
-   byte_instr[64'h0000000000000006]<=8'h5A;
-   byte_instr[64'h0000000000000007]<=8'h01;
+   byte_instr[64'h0000000000000000]<=8'hB3;
+   byte_instr[64'h0000000000000001]<=8'h04;
+   byte_instr[64'h0000000000000002]<=8'h5A;
+   byte_instr[64'h0000000000000003]<=8'h01;
 
    //32'h00148493 ADDi x9, x9, 1 add 1 to the value of x9 register
-   byte_instr[64'h0000000000000008]<=8'h93;
-   byte_instr[64'h0000000000000009]<=8'h84;
-   byte_instr[64'h000000000000000A]<=8'h14;
-   byte_instr[64'h000000000000000B]<=8'h00;
+   byte_instr[64'h0000000000000004]<=8'h93;
+   byte_instr[64'h0000000000000005]<=8'h84;
+   byte_instr[64'h0000000000000006]<=8'h14;
+   byte_instr[64'h0000000000000007]<=8'h00;
     /*
    //32'hFFF48493 ADDi x9, x9, -1 add 1 to the value of x9 register
    byte_instr[64'h0000000000000008]<=8'h93;
@@ -22,16 +22,16 @@ initial begin
    byte_instr[64'h000000000000000B]<=8'hFF;
 */
    //32'h0E953823 SD X9,240(x10) doubleword
-   byte_instr[64'h000000000000000C]<=8'h23;
-   byte_instr[64'h000000000000000D]<=8'h38;
-   byte_instr[64'h000000000000000E]<=8'h95;
-   byte_instr[64'h000000000000000F]<=8'hF0;//0E; //-240 offset
+   byte_instr[64'h0000000000000008]<=8'h23;
+   byte_instr[64'h0000000000000009]<=8'h38;
+   byte_instr[64'h000000000000000A]<=8'h95;
+   byte_instr[64'h000000000000000B]<=8'hF0;//0E; //-240 offset
 
    //32'h0F053283 LD x5,240(x10)  doubleword
-   byte_instr[64'h0000000000000010]<=8'h83;
-   byte_instr[64'h0000000000000011]<=8'h32;
-   byte_instr[64'h0000000000000012]<=8'h05;
-   byte_instr[64'h0000000000000013]<=8'hF1;//0F;  //-240 offset
+   byte_instr[64'h00000000000000C]<=8'h83;
+   byte_instr[64'h00000000000000D]<=8'h32;
+   byte_instr[64'h00000000000000E]<=8'h05;
+   byte_instr[64'h00000000000000F]<=8'hF1;//0F;  //-240 offset
 
   /* 32'h02548167 Beq x5,x9,11(hex and 17 in decimal)
    byte_instr[64'h0000000000000014]<=8'h67;
@@ -41,10 +41,10 @@ initial begin
 */
 
   //32'h80548867 Beq x5,x9,-16(-16 in decimal)
-   byte_instr[64'h0000000000000014]<=8'hE7;
-   byte_instr[64'h0000000000000015]<=8'h88;
-   byte_instr[64'h0000000000000016]<=8'h54;
-   byte_instr[64'h0000000000000017]<=8'hFE;
+   byte_instr[64'h0000000000000010]<=8'hE7;
+   byte_instr[64'h0000000000000011]<=8'h88;
+   byte_instr[64'h0000000000000012]<=8'h54;
+   byte_instr[64'h0000000000000013]<=8'hFE;
 
    //32'h00148593 ADDi xB, x9, 1 add 1 to the value of x9 register
    byte_instr[64'h0000000000000025]<=8'h93;
@@ -75,7 +75,7 @@ module clk_input(output reg clk);
 initial begin
   $dumpfile("datapath_log.vcd");
   $dumpvars;
-  #70;
+  #60;
   $finish;
 end
 initial begin

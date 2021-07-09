@@ -1,5 +1,5 @@
 psSimBaseName                      	simv
-pDaiDir                            	/home/015349334@SJSUAD.SJSU.EDU/ee271/RISC_V_Project/Pipeline/simv.daidir
+pDaiDir                            	/home/015349334@SJSUAD.SJSU.EDU/ee271/RISC_V_Project/2_way_Superscalar/simv.daidir
 destPath                           	csrc/
 hsMainFileCount                    	0
 hsMainFileName                     	dummy
