@@ -19,6 +19,34 @@ initial begin
     else if(i== 5'b01010)begin  //Giving some value at xA(hex & 10 in decimal) for the testing purpose
       register[i] = 64'h0000000000000FFF;
     end
+   else if(i== 5'b00110)begin  //Giving default value (8) at x6(hex & 10 in decimal) for the testing purpose
+      register[i] = 64'h0000000000000008;
+    end
+    else if(i== 5'b00111)begin  //Giving default value (4) at x7(hex & 10 in decimal) for the testing purpose
+      register[i] = 64'h0000000000000004;
+    end
+   else if(i== 5'b00100)begin  //Giving default value (7) at x4(hex & 10 in decimal) for the testing purpose
+      register[i] = 64'h0000000000000007;
+    end
+     else if(i== 5'b00011)begin  //Giving default value (3) at x3(hex & 10 in decimal) for the testing purpose
+      register[i] = 64'h0000000000000003;
+    end
+      else if(i== 5'b11101)begin  //Giving default value (4) at x29(hex & 10 in decimal) for the testing purpose
+      register[i] = 64'h0000000000000004;
+    end   
+     else if(i== 5'b11100)begin  //Giving default value (2) at x28(hex & 10 in decimal) for the testing purpose
+      register[i] = 64'h0000000000000002;
+    end  
+      else if(i== 5'b11010)begin  //Giving default value (5) at x26(hex & 10 in decimal) for the testing purpose
+      register[i] = 64'h0000000000000005;
+    end
+      else if(i== 5'b11001)begin  //Giving default value (9) at x25(hex & 10 in decimal) for the testing purpose
+      register[i] = 64'h0000000000000009;
+    end
+
+     else if(i== 5'b10101)begin  //Giving default value (6) at x21(hex & 10 in decimal) for the testing purpose
+      register[i] = 64'h0000000000000006;
+    end
     else begin
       register[i]=64'd0; //intializing the memory with zero values
     end
