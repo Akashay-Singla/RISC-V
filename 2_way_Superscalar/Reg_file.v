@@ -43,10 +43,10 @@ initial begin
       else if(i== 5'b11001)begin  //Giving default value (9) at x25(hex & 10 in decimal) for the testing purpose
       register[i] = 64'h0000000000000009;
     end
-
+/*
      else if(i== 5'b10101)begin  //Giving default value (6) at x21(hex & 10 in decimal) for the testing purpose
       register[i] = 64'h0000000000000006;
-    end
+    end */
     else begin
       register[i]=64'd0; //intializing the memory with zero values
     end

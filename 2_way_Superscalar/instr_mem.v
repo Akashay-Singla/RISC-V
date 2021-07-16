@@ -78,8 +78,8 @@ initial begin
 
    //XOR X27,X26,X25
    byte_instr[64'h0000000000000020]<=8'hB3;
-   byte_instr[64'h0000000000000021]<=8'hBC;
-   byte_instr[64'h0000000000000022]<=8'hAB;
+   byte_instr[64'h0000000000000021]<=8'hCD;
+   byte_instr[64'h0000000000000022]<=8'hAC;
    byte_instr[64'h0000000000000023]<=8'h01;
 
    //SLL X6,X5,X2
@@ -88,36 +88,44 @@ initial begin
    byte_instr[64'h0000000000000026]<=8'h51;
    byte_instr[64'h0000000000000027]<=8'h00;
 
-  //SRL X7,X6,X2
+  //SRL X7,X2,X6
    byte_instr[64'h0000000000000028]<=8'hB3;
    byte_instr[64'h0000000000000029]<=8'h53;
-   byte_instr[64'h000000000000002A]<=8'h61;
+   byte_instr[64'h000000000000002A]<=8'h23;
    byte_instr[64'h000000000000002B]<=8'h00;
 
    //BEQ x7,x5,offset
    byte_instr[64'h000000000000002C]<=8'h63;
-   byte_instr[64'h000000000000002D]<=8'h8B;
+   byte_instr[64'h000000000000002D]<=8'h84;
    byte_instr[64'h000000000000002E]<=8'h72;
-   byte_instr[64'h000000000000002F]<=8'h00;
+   byte_instr[64'h000000000000002F]<=8'h02;
 
     //ORi X20,x21,20
-   byte_instr[64'h0000000000000044]<=8'h13;
-   byte_instr[64'h0000000000000045]<=8'hEA;
-   byte_instr[64'h0000000000000046]<=8'h4A;
-   byte_instr[64'h0000000000000047]<=8'h01;
+   byte_instr[64'h0000000000000054]<=8'h13;
+   byte_instr[64'h0000000000000055]<=8'hEA;
+   byte_instr[64'h0000000000000056]<=8'h4A;
+   byte_instr[64'h0000000000000057]<=8'h01;
 
    //ANDi X19,x21,20
-   byte_instr[64'h0000000000000048]<=8'h93;
-   byte_instr[64'h0000000000000049]<=8'hF9;
-   byte_instr[64'h000000000000004A]<=8'h4A;
-   byte_instr[64'h000000000000004B]<=8'h01;
+   byte_instr[64'h0000000000000058]<=8'h93;
+   byte_instr[64'h0000000000000059]<=8'hF9;
+   byte_instr[64'h000000000000005A]<=8'hFA;
+   byte_instr[64'h000000000000005B]<=8'h7F;
 
 
    //XORi X18,x21,20
-   byte_instr[64'h0000000000000048]<=8'h13;
-   byte_instr[64'h0000000000000049]<=8'hC9;
-   byte_instr[64'h000000000000004A]<=8'h4A;
-   byte_instr[64'h000000000000004B]<=8'h01;
+   byte_instr[64'h000000000000005C]<=8'h13;
+   byte_instr[64'h000000000000005D]<=8'hC9;
+   byte_instr[64'h000000000000005E]<=8'h4A;
+   byte_instr[64'h000000000000005F]<=8'h01;
+
+
+  //XORi X18,x21,20
+   byte_instr[64'h000000000000005C]<=8'h13;
+   byte_instr[64'h000000000000005D]<=8'hC9;
+   byte_instr[64'h000000000000005E]<=8'h4A;
+   byte_instr[64'h000000000000005F]<=8'h01;
+
 
 
 end
@@ -140,9 +148,9 @@ endmodule
 
 module clk_input(output reg clk);
 initial begin
-  $dumpfile("datapath_log.vcd");
-  $dumpvars;
-  #60;
+  //$dumpfile("datapath_log.vcd");
+  //$dumpvars;
+  #100;
   $finish;
 end
 initial begin

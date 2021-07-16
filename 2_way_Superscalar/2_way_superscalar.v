@@ -101,18 +101,22 @@ end
   //IF/ID pipeline register
 always @(posedge clk) begin
    
-   if(stall_B == 1'b1) begin
+   if(stall_B == 1'b1 || stall_A == 1'b1) begin
      pc_buff <= pc4_buff;
      pc4_buff <= pc;
      instr1_buff <= instr2_buff;
      instr2_buff <= instr1;
+    // $display("entered into stall B loop");
    end
+   /*
    else if (stall_A == 1'b1)begin
      pc_buff <= pc_buff;
      pc4_buff <= pc;
-     instr1_buff <= instr1_buff;
+     instr1_buff <= instr2_buff;
      instr2_buff <= instr1;
+     //$display("entered into stall A loop");
    end
+   */
   else if(are_instrs_br) begin
      instr1_buff <= instr2_buff;
      instr2_buff <= instr1;
@@ -143,18 +147,24 @@ always @(posedge clk) begin
    $display ("2nd buffer: pc_buff: %h,  pc4_buff: %h, instr1_buff: %h, instr2_buff: %h", pc_buff, pc4_buff,instr1_buff, instr2_buff);
    $display("instr_inputA: %h,instr_inputB: %h", instr_inputA, instr_inputB);
 end
+ //{instr2_buff[31],instr2_buff[7],instr2_buff[30:25],instr2_buff[11:8]}
+assign instr_inputA =(((instr1_buff[6:0] !== 7'b0000011 && instr1_buff[6:0] !== 7'b0100011)&& (instr2_buff[6:0] !== 7'b1100011)) 
+                       ||((instr1_buff[6:0] === 7'b1100011 && instr2_buff[6:0] === 7'b1100011)&& (pc4_buff > pc_buff)))? instr1_buff: 
+                      (instr2_buff[6:0] !== 7'b0000011 && instr2_buff[6:0] !== 7'b0100011) ? instr2_buff : 32'bz;
 
-assign instr_inputA = ((instr1_buff[6:0] !== 7'b0000011 && instr1_buff[6:0] !== 7'b0100011)) ? instr1_buff: 
-                      ((instr2_buff[6:0] !== 7'b0000011 && instr2_buff[6:0] !== 7'b0100011)) ? instr2_buff : 32'bz;
+assign instr_inputB = (((instr2_buff[6:0] !== 7'b1100011) && (instr1_buff[6:0] !== 7'b0000011 && instr1_buff[6:0] !== 7'b0100011)) ||
+                      ((instr1_buff[6:0] === 7'b0000011 || instr1_buff[6:0] === 7'b0100011) && (instr2_buff[6:0] === 7'b0000011 || instr2_buff[6:0] === 7'b0100011)
+                       &&(pc_buff > pc4_buff))) ? instr2_buff : 
+                      (instr1_buff[6:0] !== 7'b1100011) ? instr1_buff : 32'bz;
 
-assign instr_inputB = ((instr1_buff[6:0] === 7'b0000011 || instr1_buff[6:0] === 7'b0100011) && (pc4_buff > pc_buff))  ? instr1_buff : 
-                      (instr2_buff[6:0] !== {instr2_buff[31],instr2_buff[7],instr2_buff[30:25],instr2_buff[11:8]}) ? instr2_buff : 32'bz;
+assign exch_pc = (((instr1_buff[6:0] !== 7'b0000011 && instr1_buff[6:0] !== 7'b0100011)&& (instr2_buff[6:0] !== 7'b1100011)) 
+                       ||((instr1_buff[6:0] === 7'b1100011 && instr2_buff[6:0] === 7'b1100011)&& (pc4_buff > pc_buff))) ? pc_buff : 
+                      (instr2_buff[6:0] !== 7'b0000011 && instr2_buff[6:0] !== 7'b0100011)  ? pc4_buff : 64'bz;
 
-assign exch_pc = ((instr1_buff[6:0] !== 7'b0000011 && instr1_buff[6:0] !== 7'b0100011)) ? pc_buff : 
-                      ((instr2_buff[6:0] !== 7'b0000011 && instr2_buff[6:0] !== 7'b0100011)) ? pc4_buff : 32'bz;
-
-assign exch_pc4 = ((instr1_buff[6:0] === 7'b0000011 || instr1_buff[6:0] === 7'b0100011)&& (pc4_buff > pc_buff))  ? pc_buff : 
-                      (instr2_buff[6:0] !== {instr2_buff[31],instr2_buff[7],instr2_buff[30:25],instr2_buff[11:8]}) ? pc4_buff : 32'bz;
+assign exch_pc4 = (((instr2_buff[6:0] !== 7'b1100011) && (instr1_buff[6:0] !== 7'b0000011 && instr1_buff[6:0] !== 7'b0100011)) ||
+                      ((instr1_buff[6:0] === 7'b0000011 || instr1_buff[6:0] === 7'b0100011) && (instr2_buff[6:0] === 7'b0000011 || instr2_buff[6:0] === 7'b0100011)
+                       &&(pc_buff > pc4_buff))) ? pc4_buff : 
+                      (instr1_buff[6:0] !== 7'b1100011) ? pc_buff : 64'bz;
 
 //instr2_buff[6:0] != {instr2_buff[31],instr2_buff[7],instr2_buff[30:25],instr2_buff[11:8]}
 // Decode stage
@@ -166,14 +176,20 @@ assign exch_pc4 = ((instr1_buff[6:0] === 7'b0000011 || instr1_buff[6:0] === 7'b0
   Reg_file U5(reg_wr_en1_buff3, reg_wr_en2_buff3 ,Rs1_addr1,Rs2_addr1,Rd_addr1_buff3, Rs1_addr2, Rs2_addr2, Rd_addr2_buff3,Alu_op1_buff2, reg_file_input2,Rs1_data1,Rs2_data1, Rs1_data2,Rs2_data2);
 //
 //fetching of immediate value
- assign imm_val1 = (instr1_buff[6:0] == 7'b0010011)? instr1_buff[31:20]: //I-type instruction's immediate value
-                  (instr1_buff[6:0] == 7'b1100111)? {instr1_buff[31],instr1_buff[7],instr1_buff[30:25],instr1_buff[11:8]}: //Branch instruction's immediate value
+ /*assign imm_val1 = (instr1_buff[6:0] == 7'b0010011)? instr1_buff[31:20]: //I-type instruction's immediate value
+                  (instr1_buff[6:0] == 7'b1100011)? {instr1_buff[31],instr1_buff[7],instr1_buff[30:25],instr1_buff[11:8]}: //Branch instruction's immediate value
                         12'bz;
  assign imm_val2 = (instr2_buff[6:0] == 7'b0010011 || instr2_buff[6:0] == 7'b0000011 )? instr2_buff[31:20]: //I-type & L-Load type instruction's immediate value
                    (instr2_buff[6:0] == 7'b0100011) ?{instr2_buff[31:25],instr2_buff[11:7]}: //Store instruction's immediate value
+                   12'bz;*/
+ assign imm_val1 = (instr_inputA[6:0] == 7'b0010011)? instr_inputA[31:20]: //I-type instruction's immediate value
+                  (instr_inputA[6:0] == 7'b1100011)? {instr_inputA[31],instr_inputA[7],instr_inputA[30:25],instr_inputA[11:8]}: //Branch instruction's immediate value
+                        12'bz;
+ assign imm_val2 = (instr_inputB[6:0] == 7'b0010011 || instr_inputB[6:0] == 7'b0000011 )? instr_inputB[31:20]: //I-type & L-Load type instruction's immediate value
+                   (instr_inputB[6:0] == 7'b0100011) ?{instr2_buff[31:25],instr_inputB[11:7]}: //Store instruction's immediate value
                    12'bz;
- assign sign_bit1 = instr1_buff[31];
- assign sign_bit2 = instr2_buff[31];
+ assign sign_bit1 = instr_inputA[31];
+ assign sign_bit2 = instr_inputB[31];
  assign exec_bypass1_Rs1 = ((Rs1_addr1 === Rd_addr1_buff) &&
                     (((Rs1_addr1 === Rd_addr2_buff)&&(pc_buff2 > pc4_buff2))||(Rs1_addr1 !== Rd_addr2_buff))) ? 1'b1: 1'b0;
  assign exec_bypass1_Rs2 = ((Rs2_addr1 === Rd_addr1_buff) && (pc_buff2 > pc4_buff2)) ? 1'b1: 1'b0;
@@ -231,13 +247,13 @@ assign exch_pc4 = ((instr1_buff[6:0] === 7'b0000011 || instr1_buff[6:0] === 7'b0
 
  assign are_instrs_ld_sd = ((instr1_buff[6:0]  ==  7'b0000011 || instr1_buff[6:0]  == 7'b0100011) && (instr2_buff[6:0]  == 7'b0000011 || instr2_buff[6:0]  == 7'b0100011))? 1'b1: 1'b0; //if both instructions are either load or store instructions
  assign are_instrs_br = ((instr1_buff[6:0]  ==  7'b0100011) && (instr2_buff[6:0]  == 7'b0100011))?  1'b1 : 1'b0; //if both instructions are branch instructiom 
- assign stall_B = ((((Rs1_addr2 == Rd_addr2_buff) || (Rs2_addr2 == Rd_addr2_buff)) && (mem_rd_en2_buff == 1'b1))|| (((Rs1_addr2 == Rd_addr1) || (Rs2_addr2 == Rd_addr1))&&(pc4_buff > pc_buff)))? 1'b1 : 1'b0;         
- assign stall_A = (((Rs1_addr1 == Rd_addr2 || Rs2_addr1 == Rd_addr2)&&(pc_buff > pc4_buff))||
+ assign stall_B = ((((Rs1_addr2 == Rd_addr2_buff) || (Rs2_addr2 == Rd_addr2_buff)) && (mem_rd_en2_buff == 1'b1))|| (((Rs1_addr2 == Rd_addr1) || (Rs2_addr2 == Rd_addr1))&&(exch_pc4 > exch_pc)))? 1'b1 : 1'b0;         
+ assign stall_A = (((Rs1_addr1 == Rd_addr2 || Rs2_addr1 == Rd_addr2)&&(exch_pc > exch_pc4))||
                     (((Rs2_addr1 == Rd_addr2_buff)||(Rs1_addr1 == Rd_addr2_buff))&&(mem_rd_en2_buff == 1'b1)))? 1'b1:1'b0;
   always @(posedge clk) begin
   //$display("are_instrs_ld_sd: %b", are_instrs_ld_sd);
 $display ("Rs1_addr1: %d,Rs2_addr1: %d,Rs1_addr2: %d,Rs2_addr2: %d",Rs1_addr1,Rs2_addr1,Rs1_addr2,Rs2_addr2);
-$display("Rs1_data1: %d, Rs2_data1: %d, Rs1_data2: %d, Rs2_data2: %d",Rs1_data1, Rs2_data1, Rs1_data2, Rs2_data2);
+$display("Rs1_data1: %d, Rs2_data1: %d, Rs1_data2: %d, Rs2_data2: %d, imm_val1:%b",Rs1_data1, Rs2_data1, Rs1_data2, Rs2_data2, imm_val1);
 $display ("Alu_opr1: %d, Alu_opr2: %d, stall_A: %b, stall_B: %b", Alu_opr1, Alu_opr2,stall_A, stall_B);
 $display("exec_bypass1_Rs2: %b ,mem_bypass1_Rs2: %b,wrb_bypass1_Rs2: %b,exec_intr_bp1_Rs2: %b,mem_intr_bp1_Rs2: %b,wrb_intr_bp1_Rs2: %b",
           exec_bypass1_Rs2,mem_bypass1_Rs2,wrb_bypass1_Rs2, exec_intr_bp1_Rs2, mem_intr_bp1_Rs2, wrb_intr_bp1_Rs2);
@@ -371,10 +387,10 @@ $display("exec_bypass2_buff_Rs2: %b ,mem_bypass2_buff_Rs2: %b,wrb_bypass2_buff_R
 
   assign input1_data2 = (exec_bypass2_buff_Rs1 == 1'b1) ? Alu_op2_buff:(mem_bypass2_buff_Rs1 == 1'b1) ? mem_data_output_buff:(wrb_bypass2_buff_Rs2 == 1'b1)? reg_file_input2:
                         (exec_intr_bp2_buff_Rs1 == 1'b1)? Alu_op1_buff: (mem_intr_bp2_buff_Rs1 == 1'b1)? Alu_op2_buff2 : (wrb_intr_bp2_buff_Rs1 == 1'b1)? reg_file_input1 : Rs1_data2_buff;
-
+//(wrb_bypass2_buff_Rs2 == 1'b1) ? reg_file_input2
+//(wrb_intr_bp2_buff_Rs2 == 1'b1) ?reg_file_input1 
   assign input2_data2 = (Rs2_en2_buff == 1'b1) ? ((exec_bypass2_buff_Rs2 == 1'b1) ? Alu_op2_buff:(mem_bypass2_buff_Rs2 == 1'b1) ? mem_data_output_buff:
-                       (wrb_bypass2_buff_Rs2 == 1'b1) ? reg_file_input2: (exec_intr_bp2_buff_Rs2 == 1'b1)? Alu_op1_buff: (mem_intr_bp2_buff_Rs2 == 1'b1)? Alu_op1_buff2 : 
-                       (wrb_intr_bp2_buff_Rs2 == 1'b1) ?reg_file_input1  :Rs2_data2_buff) : //R-type & branch instruction's register value
+                       (exec_intr_bp2_buff_Rs2 == 1'b1)? Alu_op1_buff: (mem_intr_bp2_buff_Rs2 == 1'b1)? Alu_op1_buff2 : Rs2_data2_buff) : //R-type & branch instruction's register value
                 ((sign_bit2_buff == 1'b1)?{52'hFFFFFFFFFFFFF,imm_val2_buff}:{52'h0000000000000,imm_val2_buff});//determine +ve and -ve number of I-type & L-Load type instruction's immediate value 
   
 
@@ -388,6 +404,7 @@ $display("exec_bypass2_buff_Rs2: %b ,mem_bypass2_buff_Rs2: %b,wrb_bypass2_buff_R
   ALU_64bit_B U6B(Alu_opr2_buff,input1_data2,input2_data2,Alu_op2);
 
  always @(posedge clk) begin
+ $display("br_taken: %b, imm_val1_buff: %d,br_en1_buff: %b",br_taken, imm_val1_buff , br_en1_buff);
   pc4_buff3 <= pc4_buff2;
   pc_buff3 <= pc_buff2;
 

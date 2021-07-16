@@ -71,6 +71,7 @@ case (input_inst[6:0])
   branch_en = 1'b0;
   Rs2_en = 1'b1;
   Alu_opr = Alu_opr_R(input_inst[14:12],input_inst[31:25]);
+  $display("Rd_addr: %b", Rd_addr);
 end
 //I-immediate instructions
 7'b0010011: begin 
@@ -84,7 +85,7 @@ end
   Alu_opr = Alu_opr_I(input_inst[14:12]);
 end
 //Branch Instruction
-7'b1100111: begin
+7'b1100011: begin
   Rs1_addr = input_inst[19:15];
   Rs2_addr = input_inst[24:20];
   Rd_addr = 5'bz;
@@ -92,6 +93,7 @@ end
   reg_write_en=1'b0;
   branch_en = 1'b1;
   Rs2_en =1'b1;
+  $display("decoder A   Alu_opr: %b, Alu_opr: %b", input_inst[14:12],Alu_opr);
 end
 default: begin
   Rs1_addr= 5'bz;
