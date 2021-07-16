@@ -240,6 +240,8 @@ default: begin
   Rs1_addr= 5'bz;
   Rs2_addr = 5'bz;
   Rd_addr = 5'bz;
+  load_flag = 3'bzzz;
+  store_flag = 2'bzz;
  //immed = 12'bz;
   Alu_opr = 4'bz;
   reg_write_en=1'b0;

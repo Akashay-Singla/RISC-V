@@ -15,20 +15,19 @@ end
 always @(mem_write_en or mem_read_en) begin
  // $display("mem_addr: %h, mem_data_input %d",mem_addr, mem_data_input);
 //Store instructions
-if(mem_write_en == 1 && mem_read_en == 0)begin
+if(mem_write_en == 1'b1 && mem_read_en == 1'b0)begin
  // $display("entered into store function");
-  if (store_format == 3'b00) begin //Store byte
-  // $display("Entered into halfword loop, data_mem %d",data_mem[mem_addr]);
+  if (store_format == 2'b00) begin //Store byte
+   $display("Entered into halfword loop, data_mem %b", mem_data_input[7:0]);
     data_mem[mem_addr]<= mem_data_input[7:0];
-    ;
   end
-  else if(store_format == 3'b01) begin //Store halfword
-//$display("Entered into halfword loop, data_mem %d",{data_mem[mem_addr],data_mem[mem_addr+1]});
+  else if(store_format == 2'b01) begin //Store halfword
+    $display("Entered into halfword loop, data_mem %d",{data_mem[mem_addr],data_mem[mem_addr+1]});
       data_mem[mem_addr] <= mem_data_input[7:0];
       data_mem[mem_addr + 1] <= mem_data_input [15:8];
   end
-  else if(store_format == 3'b10) begin //store word
-  //  $display("Entered into word loop, data_mem %d",{data_mem[mem_addr],data_mem[mem_addr+1],data_mem[mem_addr+2],data_mem[mem_addr+3]});
+  else if(store_format == 2'b10) begin //store word
+    $display("Entered into word loop, data_mem %d",{data_mem[mem_addr],data_mem[mem_addr+1],data_mem[mem_addr+2],data_mem[mem_addr+3]});
       data_mem[mem_addr] <= mem_data_input[7:0];
       data_mem[mem_addr + 1] <= mem_data_input [15:8];
       data_mem[mem_addr + 2] <= mem_data_input [23:16];
@@ -50,7 +49,7 @@ if(mem_write_en == 1 && mem_read_en == 0)begin
   
 end
 
-else if (mem_write_en == 0 && mem_read_en == 1) begin
+else if (mem_write_en == 1'b0 && mem_read_en == 1'b1) begin
   if (load_format == 3'b000) begin  //load byte
     mem_data_output[7:0] <= data_mem[mem_addr];
   //  $display("Entered into load byte loop, data_mem %h",data_mem[mem_addr]);  

@@ -120,14 +120,43 @@ initial begin
    byte_instr[64'h000000000000005F]<=8'h01;
 
 
-  //XORi X18,x21,20
-   byte_instr[64'h000000000000005C]<=8'h13;
-   byte_instr[64'h000000000000005D]<=8'hC9;
-   byte_instr[64'h000000000000005E]<=8'h4A;
-   byte_instr[64'h000000000000005F]<=8'h01;
+  //SB X2,x19,-10
+   byte_instr[64'h0000000000000060]<=8'h23;
+   byte_instr[64'h0000000000000061]<=8'h8B;
+   byte_instr[64'h0000000000000062]<=8'h99;
+   byte_instr[64'h0000000000000063]<=8'hFE;
+
+   //SH X2,x19,-9
+   byte_instr[64'h0000000000000064]<=8'hA3;
+   byte_instr[64'h0000000000000065]<=8'h9B;
+   byte_instr[64'h0000000000000066]<=8'h99;
+   byte_instr[64'h0000000000000067]<=8'hFE;
+
+    //SW X2,x19,-8
+   byte_instr[64'h0000000000000068]<=8'h23;
+   byte_instr[64'h0000000000000069]<=8'hAC;
+   byte_instr[64'h000000000000006A]<=8'h99;
+   byte_instr[64'h000000000000006B]<=8'hFE;
 
 
+   //LB X15,x19,-10
+   byte_instr[64'h000000000000006C]<=8'h83;
+   byte_instr[64'h000000000000006D]<=8'h87;
+   byte_instr[64'h000000000000006E]<=8'h69;
+   byte_instr[64'h000000000000006F]<=8'hFF; 
 
+   //LH X14,x19,-9
+   byte_instr[64'h0000000000000070]<=8'h03;
+   byte_instr[64'h0000000000000071]<=8'h97;
+   byte_instr[64'h0000000000000072]<=8'h79;
+   byte_instr[64'h0000000000000073]<=8'hFF; 
+
+   //LW X13,x19,-8
+   byte_instr[64'h0000000000000074]<=8'h83;
+   byte_instr[64'h0000000000000075]<=8'hA6;
+   byte_instr[64'h0000000000000076]<=8'h89;
+   byte_instr[64'h0000000000000077]<=8'hFF;  
+   
 end
 
 always @(PC)begin
@@ -150,7 +179,7 @@ module clk_input(output reg clk);
 initial begin
   //$dumpfile("datapath_log.vcd");
   //$dumpvars;
-  #100;
+  #150;
   $finish;
 end
 initial begin

@@ -24,7 +24,7 @@ sysc_uni_pwd=/home/015349334@SJSUAD.SJSU.EDU/ee271/RISC_V_Project/2_way_Supersca
 XDG_SESSION_ID=6713
 XDG_RUNTIME_DIR=/run/user/245455952
 XDG_DATA_DIRS=/home/015349334@SJSUAD.SJSU.EDU/.local/share/flatpak/exports/share:/var/lib/flatpak/exports/share:/usr/local/share:/usr/share
-VSCODE_IPC_HOOK_CLI=/run/user/245455952/vscode-ipc-9d2faf9e-81bd-4185-9381-9684646b3b0c.sock
+VSCODE_IPC_HOOK_CLI=/run/user/245455952/vscode-ipc-370a315e-1613-4530-af98-69c6f928f217.sock
 VSCODE_GIT_IPC_HANDLE=/run/user/245455952/vscode-git-3ceb29c28d.sock
 VSCODE_GIT_ASKPASS_NODE=/home/015349334@SJSUAD.SJSU.EDU/.vscode-server/bin/2aeda6b18e13c4f4f9edf6667158a6b8d408874b/node
 VSCODE_GIT_ASKPASS_MAIN=/home/015349334@SJSUAD.SJSU.EDU/.vscode-server/bin/2aeda6b18e13c4f4f9edf6667158a6b8d408874b/extensions/git/dist/askpass-main.js
@@ -72,15 +72,15 @@ BASH_FUNC_module%%=() {  unset _mlshdbg;_ if [ "${MODULES_SILENT_SHELL_DEBUG:-0}
 BASH_ENV=/usr/share/Modules/init/bash
 0
 6
-1626394538 instr_mem.v
-1626391845 Reg_file.v
-1625540583 Data_mem.v
+1626405935 instr_mem.v
+1626417388 Reg_file.v
+1626416101 Data_mem.v
 1626322024 Alu.v
-1626387181 decoder.v
-1626391197 2_way_superscalar.v
+1626416014 decoder.v
+1626417017 2_way_superscalar.v
 4
 0 
 1410372690 /apps/synopsys/VCSMX_NEW/linux/lib/libvirsim.so
 1410372633 /apps/synopsys/VCSMX_NEW/linux/lib/librterrorinf.so
 1410372654 /apps/synopsys/VCSMX_NEW/linux/lib/libsnpsmalloc.so
-1626394549 simv.daidir
+1626417395 simv.daidir

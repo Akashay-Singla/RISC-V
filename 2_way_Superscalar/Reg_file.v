@@ -61,16 +61,18 @@ end
  // $display("Rs1_data: %d, Rs2_data: %d", Rs1_data,Rs2_data);
 //end
 //Checks the Write enable bit then assigns the value to the particular register  
-always @(posedge Wen1 or write_data1 or Wen2 or write_data2 )begin
+always @(Wen1 or write_data1)begin
   if(Wen1)begin
   // $display("Entered into write loop");
-  register[Rd_addr1] = write_data1; 
-  $monitor("Rd_addr: %h, mem[Rd_addr]: %d",Rd_addr1,register[Rd_addr1]);
+  register[Rd_addr1] <= write_data1; 
+  //$monitor("Rd_addr1: %h, mem[Rd_addr1]: %d",Rd_addr1,register[Rd_addr1]);
 end
-else if(Wen2)begin
+end
+always @(Wen2 or write_data2 )begin
+if(Wen2)begin
   // $display("Entered into write loop");
-  register[Rd_addr2] = write_data2; 
-  $monitor("Rd_addr: %h, mem[Rd_addr]: %d",Rd_addr2,register[Rd_addr2]);
+  register[Rd_addr2] <= write_data2; 
+ // $monitor("Rd_addr2: %h, mem[Rd_addr2]: %d",Rd_addr2,register[Rd_addr2]);
 end
 end
 endmodule
