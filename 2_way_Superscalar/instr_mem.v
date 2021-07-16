@@ -133,7 +133,7 @@ initial begin
    byte_instr[64'h0000000000000067]<=8'hFE;
 
     //SW X2,x19,-8
-   byte_instr[64'h0000000000000068]<=8'h23;
+   byte_instr[64'h0000000000000068]<=8'hA3;
    byte_instr[64'h0000000000000069]<=8'hAC;
    byte_instr[64'h000000000000006A]<=8'h99;
    byte_instr[64'h000000000000006B]<=8'hFE;
@@ -154,7 +154,7 @@ initial begin
    //LW X13,x19,-8
    byte_instr[64'h0000000000000074]<=8'h83;
    byte_instr[64'h0000000000000075]<=8'hA6;
-   byte_instr[64'h0000000000000076]<=8'h89;
+   byte_instr[64'h0000000000000076]<=8'h99;
    byte_instr[64'h0000000000000077]<=8'hFF;  
    
 end
