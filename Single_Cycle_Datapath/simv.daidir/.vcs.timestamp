@@ -21,13 +21,13 @@
 Single_datapath.v
 50
 sysc_uni_pwd=/home/015349334@SJSUAD.SJSU.EDU/ee271/RISC_V_Project/Single_Cycle_Datapath
-XDG_SESSION_ID=183088
+XDG_SESSION_ID=8989
 XDG_RUNTIME_DIR=/run/user/245455952
 XDG_DATA_DIRS=/home/015349334@SJSUAD.SJSU.EDU/.local/share/flatpak/exports/share:/var/lib/flatpak/exports/share:/usr/local/share:/usr/share
-VSCODE_IPC_HOOK_CLI=/run/user/245455952/vscode-ipc-b8dde4b7-7cab-49f3-b8ee-6a17365a23d8.sock
+VSCODE_IPC_HOOK_CLI=/run/user/245455952/vscode-ipc-554105a4-ff53-4cc4-a010-3a7058a42908.sock
 VSCODE_GIT_IPC_HANDLE=/run/user/245455952/vscode-git-bf2b5d6185.sock
-VSCODE_GIT_ASKPASS_NODE=/home/015349334@SJSUAD.SJSU.EDU/.vscode-server/bin/507ce72a4466fbb27b715c3722558bb15afa9f48/node
-VSCODE_GIT_ASKPASS_MAIN=/home/015349334@SJSUAD.SJSU.EDU/.vscode-server/bin/507ce72a4466fbb27b715c3722558bb15afa9f48/extensions/git/dist/askpass-main.js
+VSCODE_GIT_ASKPASS_NODE=/home/015349334@SJSUAD.SJSU.EDU/.vscode-server/bin/c3f126316369cd610563c75b1b1725e0679adfb3/node
+VSCODE_GIT_ASKPASS_MAIN=/home/015349334@SJSUAD.SJSU.EDU/.vscode-server/bin/c3f126316369cd610563c75b1b1725e0679adfb3/extensions/git/dist/askpass-main.js
 VMR_MODE_FLAG=32
 VCS_MX_HOME_INTERNAL=1
 VCS_HOME=/apps/synopsys/VCSMX_NEW
@@ -37,10 +37,10 @@ VCS_ARCH=linux
 VCS_AMD_PURE32=1
 UNAME=/bin/uname
 TOOL_HOME=/apps/synopsys/VCSMX_NEW/linux
-TERM_PROGRAM_VERSION=1.57.1
+TERM_PROGRAM_VERSION=1.58.2
 TERM_PROGRAM=vscode
-SSH_CONNECTION=10.40.43.2 56745 130.65.179.177 22
-SSH_CLIENT=10.40.43.2 56745 22
+SSH_CONNECTION=10.40.44.44 57619 130.65.179.177 22
+SSH_CLIENT=10.40.44.44 57619 22
 SSH_ASKPASS=/usr/libexec/openssh/gnome-ssh-askpass
 SNPSLMS_LICENSE_FILE=27000@cadence3.engr.sjsu.edu:/apps/synopsys/license/current-license-key
 SFLM_SERVER=cadence3
@@ -60,7 +60,7 @@ LC_ALL=C
 KRB5CCNAME=KEYRING:persistent:245455952
 KDEDIRS=/usr
 HISTCONTROL=ignoredups
-GIT_ASKPASS=/home/015349334@SJSUAD.SJSU.EDU/.vscode-server/bin/507ce72a4466fbb27b715c3722558bb15afa9f48/extensions/git/dist/askpass.sh
+GIT_ASKPASS=/home/015349334@SJSUAD.SJSU.EDU/.vscode-server/bin/c3f126316369cd610563c75b1b1725e0679adfb3/extensions/git/dist/askpass.sh
 ENV=/usr/share/Modules/init/profile.sh
 DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/245455952/bus
 COLORTERM=truecolor
@@ -72,15 +72,15 @@ BASH_FUNC_module%%=() {  unset _mlshdbg;_ if [ "${MODULES_SILENT_SHELL_DEBUG:-0}
 BASH_ENV=/usr/share/Modules/init/bash
 0
 6
-1624406457 Fetch.v
-1624404109 Reg_file.v
-1624407293 Data_mem.v
-1624408731 Alu.v
-1623979792 decoder.v
-1624408848 Single_datapath.v
+1626554224 Instr_mem.v
+1626552330 Reg_file.v
+1626550954 Data_mem.v
+1626502910 Alu.v
+1626549310 decoder.v
+1626553802 Single_datapath.v
 4
 0 
 1410372690 /apps/synopsys/VCSMX_NEW/linux/lib/libvirsim.so
 1410372633 /apps/synopsys/VCSMX_NEW/linux/lib/librterrorinf.so
 1410372654 /apps/synopsys/VCSMX_NEW/linux/lib/libsnpsmalloc.so
-1624408853 simv.daidir
+1626554228 simv.daidir
