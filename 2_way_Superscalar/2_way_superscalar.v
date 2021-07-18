@@ -217,7 +217,6 @@ assign exch_pc4 = (((instr2_buff[6:0] !== 7'b1100011) && (instr1_buff[6:0] !== 7
                            (((Rs2_addr2 === Rd_addr1_buff3)&&(pc_buff4 < pc4_buff4))||(Rs2_addr2 !== Rd_addr1_buff3)) )? 1'b1 : 1'b0;
  assign wrb_bypass2_Rs2 = ((Rs2_addr2 === Rd_addr2_buff3) && (reg_wr_en2_buff3 == 1'b1) && (exec_bypass2_Rs2 == 1'b0)&&(mem_bypass2_Rs2 ==1'b0)&& (exec_intr_bp2_Rs2 == 1'b0) &&
                            (((Rs2_addr2 === Rd_addr1_buff3)&&(pc_buff4 < pc4_buff4))||(Rs2_addr2 !== Rd_addr1_buff3)))? 1'b1 : 1'b0;
-
 */
 
  assign exec_intr_bp2_Rs1 = ((Rs1_addr2 === Rd_addr1_buff)&& (exec_bypass2_Rs1 == 1'b0)) ? 1'b1 : 1'b0;

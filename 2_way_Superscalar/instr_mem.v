@@ -3,7 +3,7 @@ module instruction_mem(input[63:0] PC,PC4,output reg[31:0] instr1 , instr2);
 
 reg[7:0] byte_instr[65535:0];
 initial begin
-   //32'h015A04B3  ADD X9, X14 ,X15
+ //32'h015A04B3  ADD X9, X14 ,X15
    byte_instr[64'h0000000000000000]<=8'hB3;
    byte_instr[64'h0000000000000001]<=8'h04;
    byte_instr[64'h0000000000000002]<=8'h5A;
@@ -38,24 +38,21 @@ initial begin
    byte_instr[64'h0000000000000015]<=8'h81;
    byte_instr[64'h0000000000000016]<=8'h54;
    byte_instr[64'h0000000000000017]<=8'h02; 
-
-
   //32'h80548867 Beq x5,x9,-16(-16 in decimal)
    byte_instr[64'h0000000000000010]<=8'hE7;
    byte_instr[64'h0000000000000011]<=8'h88;
    byte_instr[64'h0000000000000012]<=8'h54;
    byte_instr[64'h0000000000000013]<=8'hFE;
-
    //32'h00148593 ADDi xB, x9, 1 add 1 to the value of x9 register
    byte_instr[64'h0000000000000025]<=8'h93;
    byte_instr[64'h0000000000000026]<=8'h85;
    byte_instr[64'h0000000000000027]<=8'h14;
    byte_instr[64'h0000000000000028]<=8'h00;
 */
-   //ADD X5,X6,X7
-   byte_instr[64'h0000000000000010]<=8'hB3;
-   byte_instr[64'h0000000000000011]<=8'h82;
-   byte_instr[64'h0000000000000012]<=8'h63;
+   //ADD X8,X6,X7
+   byte_instr[64'h0000000000000010]<=8'h33;
+   byte_instr[64'h0000000000000011]<=8'h04;
+   byte_instr[64'h0000000000000012]<=8'h73;
    byte_instr[64'h0000000000000013]<=8'h00;
 
    //SUB X7,X4,X3
@@ -64,10 +61,10 @@ initial begin
    byte_instr[64'h0000000000000016]<=8'h41;
    byte_instr[64'h0000000000000017]<=8'h40;
 
-  //AND X2,X5,X7
+  //AND X2,X8,X7
    byte_instr[64'h0000000000000018]<=8'h33;
    byte_instr[64'h0000000000000019]<=8'hF1;
-   byte_instr[64'h000000000000001A]<=8'h53;
+   byte_instr[64'h000000000000001A]<=8'h83;
    byte_instr[64'h000000000000001B]<=8'h00;
 
    //OR X30,X29,X28
@@ -82,10 +79,10 @@ initial begin
    byte_instr[64'h0000000000000022]<=8'hAC;
    byte_instr[64'h0000000000000023]<=8'h01;
 
-   //SLL X6,X5,X2
+   //SLL X6,X8,X2
    byte_instr[64'h0000000000000024]<=8'h33;
    byte_instr[64'h0000000000000025]<=8'h13;
-   byte_instr[64'h0000000000000026]<=8'h51;
+   byte_instr[64'h0000000000000026]<=8'h24;
    byte_instr[64'h0000000000000027]<=8'h00;
 
   //SRL X7,X2,X6
@@ -94,10 +91,10 @@ initial begin
    byte_instr[64'h000000000000002A]<=8'h23;
    byte_instr[64'h000000000000002B]<=8'h00;
 
-   //BEQ x7,x5,offset
+   //BEQ x7,x8,offset
    byte_instr[64'h000000000000002C]<=8'h63;
-   byte_instr[64'h000000000000002D]<=8'h84;
-   byte_instr[64'h000000000000002E]<=8'h72;
+   byte_instr[64'h000000000000002D]<=8'h04;
+   byte_instr[64'h000000000000002E]<=8'h74;
    byte_instr[64'h000000000000002F]<=8'h02;
 
     //ORi X20,x21,20
@@ -155,8 +152,7 @@ initial begin
    byte_instr[64'h0000000000000074]<=8'h83;
    byte_instr[64'h0000000000000075]<=8'hA6;
    byte_instr[64'h0000000000000076]<=8'h99;
-   byte_instr[64'h0000000000000077]<=8'hFF;  
-   
+   byte_instr[64'h0000000000000077]<=8'hFF; 
 end
 
 always @(PC)begin
@@ -177,15 +173,15 @@ endmodule
 
 module clk_input(output reg clk);
 initial begin
-  //$dumpfile("datapath_log.vcd");
-  //$dumpvars;
-  #150;
+  $dumpfile("datapath_log.vcd");
+  $dumpvars;
+  #5;
   $finish;
 end
 initial begin
     clk=0;
 end
-always #3 clk= ~clk;
+always #0.1 clk= ~clk;
 
 endmodule
 
