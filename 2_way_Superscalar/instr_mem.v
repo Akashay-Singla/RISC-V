@@ -1,5 +1,5 @@
 
-module instruction_mem(input[63:0] PC,PC4,output reg[31:0] instr1 , instr2);
+module instruction_mem(input[63:0] PC,PC4,output [31:0] instr1 , instr2);
 
 reg[7:0] byte_instr[65535:0];
 initial begin
@@ -28,8 +28,8 @@ initial begin
    byte_instr[64'h000000000000000B]<=8'hF0;//0E; //-240 offset
 
    //32'h0F053283 LD x5,240(x10)  doubleword
-   byte_instr[64'h00000000000000C]<=8'h83;
-   byte_instr[64'h00000000000000D]<=8'h32;
+   byte_instr[64'h00000000000000C]<=8'h03;
+   byte_instr[64'h00000000000000D]<=8'h34;
    byte_instr[64'h00000000000000E]<=8'h05;
    byte_instr[64'h00000000000000F]<=8'hF1;//0F;  //-240 offset
 
@@ -155,19 +155,19 @@ initial begin
    byte_instr[64'h0000000000000077]<=8'hFF; 
 end
 
-always @(PC)begin
+  //$display("PC: %h,PC4: %h", PC,PC4);
  //$display("PC: %h", PC);
- instr1[7:0] <= byte_instr[PC];
- instr1[15:8] <= byte_instr[PC+1];
- instr1[23:16] <= byte_instr[PC+2];
- instr1[31:24] <= byte_instr[PC+3];
+ assign instr1[7:0] = byte_instr[PC];
+ assign instr1[15:8] = byte_instr[PC+1];
+ assign instr1[23:16] = byte_instr[PC+2];
+ assign instr1[31:24] = byte_instr[PC+3];
 
- instr2[7:0] <= byte_instr[PC4];
- instr2[15:8] <= byte_instr[PC4+1];
- instr2[23:16] <= byte_instr[PC4+2];
- instr2[31:24] <= byte_instr[PC4+3];
+ assign instr2[7:0] = byte_instr[PC4];
+ assign instr2[15:8] = byte_instr[PC4+1];
+ assign instr2[23:16] = byte_instr[PC4+2];
+ assign instr2[31:24] = byte_instr[PC4+3];
 // $display("instr[31:0]: %h",instr);
-end
+
 endmodule
 
 

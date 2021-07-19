@@ -1,4 +1,5 @@
-module data_memory(input[2:0] load_format,
+module data_memory(input clk,
+  input[2:0] load_format,
 input [1:0] store_format,
 input mem_write_en,mem_read_en,
 input[63:0] mem_addr, mem_data_input,
@@ -12,7 +13,7 @@ initial begin
   end
 end
 
-always @(store_format or mem_write_en or mem_data_input) begin
+always @(posedge clk) begin
  // $display("mem_addr: %h, mem_data_input %d",mem_addr, mem_data_input);
 //Store instructions
 if(mem_write_en == 1'b1 && mem_read_en == 1'b0)begin

@@ -18,7 +18,7 @@ reg br_taken_buff,br_en1_buff, br_en1_buff2, br_en2_buff, br_en2_buff2; //branch
 wire [63:0] br_addr; //br_addr is the address where processor has to jump
 reg [63:0] br_addr_buff;
 wire [63:0] exch_pc, exch_pc4;
-reg[63:0] pc,pc4; //program counter
+reg[63:0] pc,pc4,nextpc,nextpc4; //program counter
 reg [63:0] pc_buff,pc_buff2, pc_buff3, pc_buff4,pc4_buff,pc4_buff2,pc4_buff3, pc4_buff4 ; //program counter buffers 
 wire[31:0] instr1,instr2, instr_inputA,instr_inputB;  //instruction's variable
 reg [31:0] instr1_buff,instr2_buff ; //insruction1 and instruction 2 buffer
@@ -64,7 +64,7 @@ wire signed [63:0] Rs1_data1,Rs2_data1,input1_data1,input2_data1,Rs1_data2,Rs2_d
 reg signed [63:0] Rs1_data1_buff,Rs2_data1_buff, Rs1_data2_buff,Rs2_data2_buff ,data_store_mem_buff;
 wire signed [11:0] imm_val1, imm_val2; //immmediate value
 reg signed [11:0] imm_val1_buff, imm_val2_buff; //immediate value buffer
-
+integer num_clk=0;
 //intialization of registers
 //----------------------------------------------------------------------------------------------
 initial begin
@@ -77,8 +77,8 @@ end
                                                       //Fetching stage
 //---------------------------------------------------------------------------------------------------------------------
   //fetch_RISCV U2(clk,((br_taken_buff == 1'b0 && br_en_buff2==1'b1)? 1'b1:1'b0),stall,br_addr_buff,pc);
-
 always @(posedge clk) begin
+num_clk= num_clk+1;
   if (stall_A == 1'b1 || stall_B == 1'b1)begin
     pc <= pc4;
     pc4 <= pc+8;
@@ -95,12 +95,12 @@ always @(posedge clk) begin
     pc<=pc+8;
     pc4<=pc4+8;
   end
-  $display("fist stage: pc: %h,  pc4: %h", pc,pc4);
+  $display("fist stage: pc: %h,  pc4: %h, num_clk: %d", pc,pc4, num_clk);
 end
   instruction_mem U3(pc,pc4,instr1,instr2);
   //IF/ID pipeline register
 always @(posedge clk) begin
-   
+   $display("instr1: %h,instr2: %h",instr1, instr2);
    if(stall_B == 1'b1 || stall_A == 1'b1) begin
      pc_buff <= pc4_buff;
      pc4_buff <= pc;
@@ -173,7 +173,7 @@ assign exch_pc4 = (((instr2_buff[6:0] !== 7'b1100011) && (instr1_buff[6:0] !== 7
   Decoder_A U4A(instr_inputA,Alu_opr1,Rd_addr1,Rs1_addr1,Rs2_addr1,reg_wr_en1,br_en1, Rs2_en1);
   Decoder_B U4B(instr_inputB,Alu_opr2,load_opr2,store_opr2,Rd_addr2,Rs1_addr2,Rs2_addr2,reg_wr_en2,mem_wr_en2,mem_rd_en2,Rs2_en2);
 //Fetch the data value from register file for input data 1 and input data 2
-  Reg_file U5(reg_wr_en1_buff3, reg_wr_en2_buff3 ,Rs1_addr1,Rs2_addr1,Rd_addr1_buff3, Rs1_addr2, Rs2_addr2, Rd_addr2_buff3,Alu_op1_buff2, reg_file_input2,Rs1_data1,Rs2_data1, Rs1_data2,Rs2_data2);
+  Reg_file U5(clk,reg_wr_en1_buff3, reg_wr_en2_buff3 ,Rs1_addr1,Rs2_addr1,Rd_addr1_buff3, Rs1_addr2, Rs2_addr2, Rd_addr2_buff3,reg_file_input1, reg_file_input2,Rs1_data1,Rs2_data1, Rs1_data2,Rs2_data2);
 //
 //fetching of immediate value
  /*assign imm_val1 = (instr1_buff[6:0] == 7'b0010011)? instr1_buff[31:20]: //I-type instruction's immediate value
@@ -436,7 +436,7 @@ $display("exec_bypass2_buff_Rs2: %b ,mem_bypass2_buff_Rs2: %b,wrb_bypass2_buff_R
  end
   
   //Data memory is of 2047 x 8 means 8-bit as RISC V has byte addressable memory.
-  data_memory U7(load_opr2_buff2,store_opr2_buff2,mem_wr_en2_buff2,mem_rd_en2_buff2,Alu_op2_buff,data_store_mem_buff,mem_data_output);
+  data_memory U7(clk,load_opr2_buff2,store_opr2_buff2,mem_wr_en2_buff2,mem_rd_en2_buff2,Alu_op2_buff,data_store_mem_buff,mem_data_output);
 always @(posedge clk) begin
    pc4_buff4 <= pc4_buff3;
    pc_buff4 <= pc_buff3;
@@ -457,8 +457,8 @@ always @(posedge clk) begin
    $display("------------------------------------------------------------------------------------------------------------------------------");
 end
   //This is a mux having two inputs with one select line.It provides the data memory output if instruction is load else provides the alu output to the register file 
-  assign reg_file_input2 = (mem_rd_en2_buff3 == 1'b1) ? mem_data_output_buff:Alu_op2_buff2;
-  assign reg_file_input1 = Alu_op1_buff2; 
+  assign reg_file_input2 = (Rd_addr1_buff3 == Rd_addr2_buff3)? ((pc4_buff4 > pc_buff4) ? ((mem_rd_en2_buff3 == 1'b1) ? mem_data_output_buff:Alu_op2_buff2) : Alu_op1_buff2) : ((mem_rd_en2_buff3 == 1'b1) ? mem_data_output_buff:Alu_op2_buff2) ;
+  assign reg_file_input1 = (Rd_addr1_buff3 !== Rd_addr2_buff3)?  Alu_op1_buff2 : 64'hzzzzzzzzzzzzzzzz; 
 /*always@ (posedge instr)begin
    $monitor("Wen: %b,Rs1_addr: %h,Rs2_addr: %h,Wd_addr: %h,write_data: %h,Rs1_data: %h,Rs2_data: %h, alu_output: %h", Wen,Rs1_addr,Rs2_addr,Wd_addr,write_data,Rs1_data,Rs2_data,Alu_output);
 end*/
