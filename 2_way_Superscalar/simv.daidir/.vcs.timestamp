@@ -73,14 +73,14 @@ BASH_ENV=/usr/share/Modules/init/bash
 0
 6
 1626646537 instr_mem.v
-1626659783 Reg_file.v
+1626659966 Reg_file.v
 1626640267 Data_mem.v
 1626322024 Alu.v
 1626416014 decoder.v
-1626659693 2_way_superscalar.v
+1626660572 2_way_superscalar.v
 4
 0 
 1410372690 /apps/synopsys/VCSMX_NEW/linux/lib/libvirsim.so
 1410372633 /apps/synopsys/VCSMX_NEW/linux/lib/librterrorinf.so
 1410372654 /apps/synopsys/VCSMX_NEW/linux/lib/libsnpsmalloc.so
-1626659789 simv.daidir
+1626660580 simv.daidir

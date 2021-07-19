@@ -60,7 +60,7 @@ wire [4:0] Rd_addr1, Rs1_addr1,Rs2_addr1, Rd_addr2, Rs1_addr2,Rs2_addr2; //desti
 reg [4:0] Rd_addr1_buff,Rd_addr1_buff2,Rd_addr1_buff3,Rd_addr2_buff,Rd_addr2_buff2,Rd_addr2_buff3;// destination address buffers
 
 
-wire signed [63:0] Rs1_data1,Rs2_data1,input1_data1,input2_data1,Rs1_data2,Rs2_data2,input1_data2,input2_data2 ,data_store_mem; //Register file source 1 data and register file source 2 data & ALU input 2 data
+wire signed [63:0] Rs1_data1,Rs2_data1,input1_data1,input2_data1,Rs1_data2,Rs2_data2,input1_data2,input2_data2 ,data_store_mem, Rs1_data1_final,Rs2_data1_final,Rs1_data2_final,Rs2_data2_final; //Register file source 1 data and register file source 2 data & ALU input 2 data
 reg signed [63:0] Rs1_data1_buff,Rs2_data1_buff, Rs1_data2_buff,Rs2_data2_buff ,data_store_mem_buff;
 wire signed [11:0] imm_val1, imm_val2; //immmediate value
 reg signed [11:0] imm_val1_buff, imm_val2_buff; //immediate value buffer
@@ -174,6 +174,10 @@ assign exch_pc4 = (((instr2_buff[6:0] !== 7'b1100011) && (instr1_buff[6:0] !== 7
   Decoder_B U4B(instr_inputB,Alu_opr2,load_opr2,store_opr2,Rd_addr2,Rs1_addr2,Rs2_addr2,reg_wr_en2,mem_wr_en2,mem_rd_en2,Rs2_en2);
 //Fetch the data value from register file for input data 1 and input data 2
   Reg_file U5(clk,reg_wr_en1_buff3, reg_wr_en2_buff3 ,Rs1_addr1,Rs2_addr1,Rd_addr1_buff3, Rs1_addr2, Rs2_addr2, Rd_addr2_buff3,reg_file_input1, reg_file_input2,Rs1_data1,Rs2_data1, Rs1_data2,Rs2_data2);
+  assign Rs1_data1_final = (wrb_bypass1_Rs1 == 1'b1)? reg_file_input1 : (wrb_intr_bp1_Rs1) ? reg_file_input2 : Rs1_data1;
+  assign Rs2_data1_final = (wrb_bypass1_Rs2 == 1'b1)? reg_file_input1 : (wrb_intr_bp1_Rs2) ? reg_file_input2 : Rs2_data1;
+  assign Rs1_data2_final = (wrb_bypass2_Rs1 == 1'b1)? reg_file_input2 : (wrb_intr_bp2_Rs1 == 1'b1) ? reg_file_input2 : Rs1_data2;
+  assign Rs2_data2_final = (wrb_bypass2_Rs2 == 1'b1)? reg_file_input2 : (wrb_intr_bp2_Rs2 == 1'b1) ? reg_file_input2 : Rs2_data2;
 //
 //fetching of immediate value
  /*assign imm_val1 = (instr1_buff[6:0] == 7'b0010011)? instr1_buff[31:20]: //I-type instruction's immediate value
@@ -198,12 +202,12 @@ assign exch_pc4 = (((instr2_buff[6:0] !== 7'b1100011) && (instr1_buff[6:0] !== 7
                     (((Rs1_addr1 === Rd_addr2_buff2)&&(pc_buff3 > pc4_buff3))||(Rs1_addr1 !== Rd_addr2_buff2)))? 1'b1: 1'b0;
  assign mem_bypass1_Rs2 = ((Rs2_addr1 === Rd_addr1_buff2) &&  (exec_intr_bp1_Rs2 == 1'b0) && (exec_bypass1_Rs2 == 1'b0) &&
                             (((Rs2_addr1 === Rd_addr2_buff2)&&(pc_buff3 > pc4_buff3))||(Rs2_addr1 !== Rd_addr2_buff2)))? 1'b1: 1'b0;
-                            /*
+                            
  assign wrb_bypass1_Rs1 = ((Rs1_addr1 === Rd_addr1_buff3) && (exec_bypass1_Rs1 == 1'b0)&&(mem_bypass1_Rs1==1'b0)&& (exec_intr_bp1_Rs1 == 1'b0) && 
                            (((Rs2_addr1 === Rd_addr2_buff3)&&(pc_buff4 > pc4_buff4))||(Rs2_addr1 !== Rd_addr2_buff3)))? 1'b1 : 1'b0;
  assign wrb_bypass1_Rs2 = ((Rs2_addr1 === Rd_addr1_buff3 && reg_wr_en1_buff3 == 1'b1) && (exec_bypass1_Rs2 == 1'b0)&&(mem_bypass1_Rs2==1'b0)&& (exec_intr_bp1_Rs2 == 1'b0) && 
                  (((Rs2_addr1 === Rd_addr2_buff3)&&(pc_buff4 > pc4_buff4))||(Rs2_addr1 !== Rd_addr2_buff3)))  ? 1'b1 : 1'b0;
-*/
+
 
  assign exec_bypass2_Rs1 = ((Rs1_addr2 === Rd_addr2_buff) && (mem_wr_en2_buff === 1'b0) && (mem_rd_en2_buff === 1'b0) &&
                           (((Rs1_addr2 === Rd_addr1_buff)&&(pc_buff2 < pc4_buff2))||(Rs1_addr2 !== Rd_addr1_buff)))  ? 1'b1: 1'b0;
@@ -213,11 +217,11 @@ assign exch_pc4 = (((instr2_buff[6:0] !== 7'b1100011) && (instr1_buff[6:0] !== 7
                         (((Rs1_addr2 === Rd_addr1_buff2)&&(pc_buff3 < pc4_buff3))||(Rs1_addr2 !== Rd_addr1_buff2))) ? 1'b1 : 1'b0;
  assign mem_bypass2_Rs2 =  ((Rs2_addr2 === Rd_addr2_buff2) && (mem_wr_en2_buff2 === 1'b0) && (exec_bypass2_Rs2 == 1'b0) && (exec_intr_bp2_Rs2 == 1'b0) &&
                       (((Rs1_addr2 === Rd_addr1_buff2)&&(pc_buff3 < pc4_buff3))||(Rs1_addr2 != Rd_addr1_buff2))) ? 1'b1 : 1'b0;
- /*assign wrb_bypass2_Rs1 = ((Rs1_addr2 === Rd_addr2_buff3) && (reg_wr_en2_buff3 == 1'b1)&& (exec_bypass2_Rs1 == 1'b0)&&(mem_bypass2_Rs1==1'b0)&& (exec_intr_bp2_Rs1 == 1'b0) && 
+ assign wrb_bypass2_Rs1 = ((Rs1_addr2 === Rd_addr2_buff3) && (reg_wr_en2_buff3 == 1'b1)&& (exec_bypass2_Rs1 == 1'b0)&&(mem_bypass2_Rs1==1'b0)&& (exec_intr_bp2_Rs1 == 1'b0) && 
                            (((Rs2_addr2 === Rd_addr1_buff3)&&(pc_buff4 < pc4_buff4))||(Rs2_addr2 !== Rd_addr1_buff3)) )? 1'b1 : 1'b0;
  assign wrb_bypass2_Rs2 = ((Rs2_addr2 === Rd_addr2_buff3) && (reg_wr_en2_buff3 == 1'b1) && (exec_bypass2_Rs2 == 1'b0)&&(mem_bypass2_Rs2 ==1'b0)&& (exec_intr_bp2_Rs2 == 1'b0) &&
                            (((Rs2_addr2 === Rd_addr1_buff3)&&(pc_buff4 < pc4_buff4))||(Rs2_addr2 !== Rd_addr1_buff3)))? 1'b1 : 1'b0;
-*/
+
 
  assign exec_intr_bp2_Rs1 = ((Rs1_addr2 === Rd_addr1_buff)&& (exec_bypass2_Rs1 == 1'b0)) ? 1'b1 : 1'b0;
  assign exec_intr_bp2_Rs2 = ((Rs2_addr2 === Rd_addr1_buff)&& (exec_bypass2_Rs1 == 1'b0)) ? 1'b1 : 1'b0;
@@ -225,12 +229,12 @@ assign exch_pc4 = (((instr2_buff[6:0] !== 7'b1100011) && (instr1_buff[6:0] !== 7
                            (mem_bypass1_Rs2 == 1'b0)) ? 1'b1: 1'b0;
  assign mem_intr_bp2_Rs2 =((Rs2_addr2 === Rd_addr1_buff2)&& (exec_intr_bp2_Rs2 == 1'b0) && (exec_bypass2_Rs2 == 1'b0)&&
                            (mem_bypass2_Rs2 == 1'b0)) ? 1'b1: 1'b0;
-/*
+
  assign wrb_intr_bp2_Rs1 =((Rs1_addr2 === Rd_addr1_buff3) && (exec_intr_bp2_Rs1 == 1'b0)
                             && (exec_bypass1_Rs1 == 1'b0)&& (mem_bypass1_Rs1 == 1'b0) && (wrb_bypass1_Rs1 == 1'b0)) ? 1'b1: 1'b0;
  assign wrb_intr_bp2_Rs2 = ((Rs2_addr2 === Rd_addr1_buff3) &&(exec_intr_bp1_Rs2 == 1'b0)
                             && (exec_bypass2_Rs2 == 1'b0)&& (mem_bypass2_Rs2 == 1'b0) && (wrb_bypass2_Rs2 == 1'b0)) ? 1'b1: 1'b0;
-*/
+
 
  assign exec_intr_bp1_Rs1 =((Rs1_addr1 === Rd_addr2_buff) && (mem_wr_en2_buff === 1'b0) && (mem_rd_en2_buff === 1'b0) &&
                               (exec_bypass1_Rs1 == 1'b0)) ? 1'b1 : 1'b0;
@@ -241,12 +245,12 @@ assign exch_pc4 = (((instr2_buff[6:0] !== 7'b1100011) && (instr1_buff[6:0] !== 7
  assign mem_intr_bp1_Rs2 = ((Rs2_addr1 === Rd_addr2_buff2) && (mem_wr_en2_buff === 1'b0) && (exec_intr_bp1_Rs2 == 1'b0)
                             && (exec_bypass1_Rs2 == 1'b0)&& (mem_bypass1_Rs2 == 1'b0))? 1'b1: 1'b0;
 
-/*
+
  assign wrb_intr_bp1_Rs1 = ((Rs1_addr1 === Rd_addr2_buff3) && (reg_wr_en2_buff3 == 1'b1) && (exec_intr_bp1_Rs1 == 1'b0)
                             && (exec_bypass1_Rs1 == 1'b0)&& (mem_bypass1_Rs1 == 1'b0) && (wrb_bypass1_Rs1 == 1'b0) )? 1'b1: 1'b0;
  assign wrb_intr_bp1_Rs2 = ((Rs2_addr1 === Rd_addr2_buff3) && (reg_wr_en2_buff3 == 1'b1) && (exec_intr_bp1_Rs2 == 1'b0) && 
                           (exec_bypass1_Rs2 == 1'b0) && (mem_bypass1_Rs2 == 1'b0) && (wrb_bypass1_Rs2 == 1'b0))? 1'b1: 1'b0;
-*/
+
 
  assign are_instrs_ld_sd = ((instr1_buff[6:0]  ==  7'b0000011 || instr1_buff[6:0]  == 7'b0100011) && (instr2_buff[6:0]  == 7'b0000011 || instr2_buff[6:0]  == 7'b0100011))? 1'b1: 1'b0; //if both instructions are either load or store instructions
  assign are_instrs_br = ((instr1_buff[6:0]  ==  7'b0100011) && (instr2_buff[6:0]  == 7'b0100011))?  1'b1 : 1'b0; //if both instructions are branch instructiom 
@@ -256,7 +260,7 @@ assign exch_pc4 = (((instr2_buff[6:0] !== 7'b1100011) && (instr1_buff[6:0] !== 7
   always @(posedge clk) begin
   //$display("are_instrs_ld_sd: %b", are_instrs_ld_sd);
 $display ("Rs1_addr1: %d,Rs2_addr1: %d,Rs1_addr2: %d,Rs2_addr2: %d",Rs1_addr1,Rs2_addr1,Rs1_addr2,Rs2_addr2);
-$display("Rs1_data1: %d, Rs2_data1: %d, Rs1_data2: %d, Rs2_data2: %d, imm_val1:%b",Rs1_data1, Rs2_data1, Rs1_data2, Rs2_data2, imm_val1);
+$display("Rs1_data1: %d, Rs2_data1: %d, Rs1_data2: %d, Rs2_data2: %d, imm_val1:%b",Rs1_data1_final, Rs2_data1_final, Rs1_data2_final, Rs2_data2_final, imm_val1);
 $display ("Alu_opr1: %d, Alu_opr2: %d, stall_A: %b, stall_B: %b", Alu_opr1, Alu_opr2,stall_A, stall_B);
 $display("exec_bypass1_Rs2: %b ,mem_bypass1_Rs2: %b,wrb_bypass1_Rs2: %b,exec_intr_bp1_Rs2: %b,mem_intr_bp1_Rs2: %b,wrb_intr_bp1_Rs2: %b",
           exec_bypass1_Rs2,mem_bypass1_Rs2,wrb_bypass1_Rs2, exec_intr_bp1_Rs2, mem_intr_bp1_Rs2, wrb_intr_bp1_Rs2);
@@ -280,8 +284,8 @@ $display("exec_bypass2_Rs2: %b ,mem_bypass2_Rs2: %b,wrb_bypass2_Rs2: %b,exec_int
      Alu_opr2_buff <= Alu_opr2;
      load_opr2_buff <= load_opr2;
      store_opr2_buff <= store_opr2;
-     Rs1_data2_buff <= Rs1_data2;
-     Rs2_data2_buff <= Rs2_data2;
+     Rs1_data2_buff <= Rs1_data2_final;
+     Rs2_data2_buff <= Rs2_data2_final;
      imm_val2_buff <= imm_val2;
      Rd_addr2_buff <= Rd_addr2;
      mem_wr_en2_buff <= mem_wr_en2;
@@ -294,8 +298,8 @@ $display("exec_bypass2_Rs2: %b ,mem_bypass2_Rs2: %b,wrb_bypass2_Rs2: %b,exec_int
      pc_buff2 <= exch_pc;
      pc4_buff2 <= 64'bz;
      Alu_opr1_buff <= Alu_opr1;
-     Rs1_data1_buff <= Rs1_data1;
-     Rs2_data1_buff <= Rs2_data1;
+     Rs1_data1_buff <= Rs1_data1_final;
+     Rs2_data1_buff <= Rs2_data1_final;
      imm_val1_buff <= imm_val1;
      Rd_addr1_buff <= Rd_addr1;
      br_en1_buff <= br_en1;
@@ -320,8 +324,8 @@ $display("exec_bypass2_Rs2: %b ,mem_bypass2_Rs2: %b,wrb_bypass2_Rs2: %b,exec_int
     pc_buff2 <= exch_pc;
     pc4_buff2 <= exch_pc4;
      Alu_opr1_buff <= Alu_opr1;
-     Rs1_data1_buff <= Rs1_data1;
-     Rs2_data1_buff <= Rs2_data1;
+     Rs1_data1_buff <= Rs1_data1_final;
+     Rs2_data1_buff <= Rs2_data1_final;
      imm_val1_buff <= imm_val1;
      Rd_addr1_buff <= Rd_addr1;
      br_en1_buff <= br_en1;
@@ -332,8 +336,8 @@ $display("exec_bypass2_Rs2: %b ,mem_bypass2_Rs2: %b,wrb_bypass2_Rs2: %b,exec_int
      load_opr2_buff <= load_opr2;
      store_opr2_buff <= store_opr2;
      Alu_opr2_buff <= Alu_opr2;
-     Rs1_data2_buff <= Rs1_data2;
-     Rs2_data2_buff <= Rs2_data2;
+     Rs1_data2_buff <= Rs1_data2_final;
+     Rs2_data2_buff <= Rs2_data2_final;
      imm_val2_buff <= imm_val2;
      Rd_addr2_buff <= Rd_addr2;
      mem_wr_en2_buff <= mem_wr_en2;
