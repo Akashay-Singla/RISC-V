@@ -1,4 +1,4 @@
-module Reg_file(input Wen, 
+module Reg_file(input clk,Wen, 
 input [4:0] Rs1_addr,Rs2_addr, Rd_addr,
 input signed [63:0] write_data,
 output signed [63:0] Rs1_data,Rs2_data);
@@ -57,7 +57,7 @@ end
  assign Rs1_data = register[Rs1_addr];  //gives register value for input 1 of ALU
  assign Rs2_data = register[Rs2_addr];  //gives register value for input 2 of ALiU
 //Checks the Write enable bit then assigns the value to the particular register  
-always @(write_data)begin
+always @(posedge clk)begin
   if(Wen)begin
   // $display("Entered into write loop");
   register[Rd_addr] <= write_data;

@@ -173,12 +173,12 @@ module clk_input(output reg clk);
 initial begin
   $dumpfile("Single_datapath_log.vcd");
   $dumpvars;
-  #42;
+  #5;
   $finish;
 end
 initial begin
     clk=1'b0;
 end
-always #0.5 clk= ~clk;
+always #0.1 clk= ~clk;
 
 endmodule
