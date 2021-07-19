@@ -52,18 +52,18 @@ initial begin
     end
   end
 end
-
+/*
  assign Rs1_data1 = ((Rs1_addr1 === Rd_addr1) && Wen1 == 1'b1)? write_data1: ((Rs1_addr1 === Rd_addr2) && Wen2 == 1'b1)? write_data2 : register[Rs1_addr1];  //gives register value for input 1 of ALU
  assign Rs2_data1 = ((Rs2_addr1 === Rd_addr1) && Wen1 == 1'b1)? write_data1: ((Rs2_addr1 === Rd_addr2) && Wen2 == 1'b1)? write_data2 : register[Rs2_addr1];  //gives register value for input 2 of ALU
  assign Rs1_data2 = ((Rs1_addr2 === Rd_addr2) && Wen2 == 1'b1)? write_data2: ((Rs1_addr1 === Rd_addr1) && Wen1 == 1'b1)? write_data1 : register[Rs1_addr2];  //gives register value for input 1 of ALU
  assign Rs2_data2 = ((Rs2_addr2 === Rd_addr2) && Wen2 == 1'b1)? write_data2: ((Rs2_addr1 === Rd_addr1) && Wen1 == 1'b1)? write_data1 : register[Rs2_addr2];  //gives register value for input 2 of ALU
+*/
 
-/*
 assign Rs1_data1 =  register[Rs1_addr1];  //gives register value for input 1 of ALU
  assign Rs2_data1 = register[Rs2_addr1];  //gives register value for input 2 of ALU
  assign Rs1_data2 = register[Rs1_addr2];  //gives register value for input 1 of ALU
  assign Rs2_data2 = register[Rs2_addr2];  //gives register value for input 2 of ALU
-*/
+
 
 
 //always @(Rs1_data or Rs2_data) begin
