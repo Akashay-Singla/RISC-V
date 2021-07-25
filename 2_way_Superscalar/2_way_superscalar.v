@@ -122,13 +122,16 @@ always @(posedge clk) begin
      instr2_buff <= instr1;
    end 
    else if (are_instrs_ld_sd ) begin
+     $display ("Entered into both instr pC loop");
      if (pc4_buff > pc_buff) begin
      instr2_buff <= instr2_buff;
      pc4_buff<= pc4_buff;
+     $display("entered into pc4>pc_buff for both load instrs");
      end
     else begin
      instr2_buff <= instr1_buff;
      pc4_buff<= pc_buff;
+     $display("entered into else of both load instrs");
     end
     instr1_buff <= instr1;
      pc_buff <= pc;
@@ -254,7 +257,7 @@ assign exch_pc4 = (((instr2_buff[6:0] !== 7'b1100011) && (instr1_buff[6:0] !== 7
 
 
  assign are_instrs_ld_sd = ((instr1_buff[6:0]  ==  7'b0000011 || instr1_buff[6:0]  == 7'b0100011) && (instr2_buff[6:0]  == 7'b0000011 || instr2_buff[6:0]  == 7'b0100011))? 1'b1: 1'b0; //if both instructions are either load or store instructions
- assign are_instrs_br = ((instr1_buff[6:0]  ==  7'b0100011) && (instr2_buff[6:0]  == 7'b0100011))?  1'b1 : 1'b0; //if both instructions are branch instructiom 
+ assign are_instrs_br = ((instr1_buff[6:0]  ==  7'b1100011) && (instr2_buff[6:0]  == 7'b1100011))?  1'b1 : 1'b0; //if both instructions are branch instructiom 
  assign stall_B = ((((Rs1_addr2 == Rd_addr2_buff) || (Rs2_addr2 == Rd_addr2_buff)) && (mem_rd_en2_buff == 1'b1))|| (((Rs1_addr2 == Rd_addr1) || (Rs2_addr2 == Rd_addr1))&&(exch_pc4 > exch_pc)))? 1'b1 : 1'b0;         
  assign stall_A = (((Rs1_addr1 == Rd_addr2 || Rs2_addr1 == Rd_addr2)&&(exch_pc > exch_pc4))||
                     (((Rs2_addr1 == Rd_addr2_buff)||(Rs1_addr1 == Rd_addr2_buff))&&(mem_rd_en2_buff == 1'b1)))? 1'b1:1'b0;
@@ -264,7 +267,7 @@ assign exch_pc4 = (((instr2_buff[6:0] !== 7'b1100011) && (instr1_buff[6:0] !== 7
 // $display("wrb_bypass1_Rs1: %b,wrb_intr_bp1_Rs1: %b,wrb_bypass1_Rs2: %b,wrb_intr_bp2_Rs1: %b, wrb_bypass2_Rs1: %b,wrb_bypass2_Rs2: %b, wrb_intr_bp2_Rs2: %b", wrb_bypass1_Rs1,wrb_intr_bp1_Rs1,wrb_bypass1_Rs2,wrb_intr_bp2_Rs1, wrb_bypass2_Rs1,wrb_bypass2_Rs2, wrb_intr_bp2_Rs2 );
 $display ("Rs1_addr1: %d,Rs2_addr1: %d,Rs1_addr2: %d,Rs2_addr2: %d",Rs1_addr1,Rs2_addr1,Rs1_addr2,Rs2_addr2);
 $display("Rs1_data1: %d, Rs2_data1: %d, Rs1_data2: %d, Rs2_data2: %d, imm_val1:%b",Rs1_data1_final, Rs2_data1_final, Rs1_data2_final, Rs2_data2_final, imm_val1);
-$display ("Alu_opr1: %d, Alu_opr2: %d, stall_A: %b, stall_B: %b", Alu_opr1, Alu_opr2,stall_A, stall_B);
+$display ("Alu_opr1: %d, Alu_opr2: %d, stall_A: %b, stall_B: %b, are_instr_ld_sd: %b are_instrs_br: %b", Alu_opr1, Alu_opr2,stall_A, stall_B, are_instrs_ld_sd, are_instrs_br);
 //$display("exec_bypass1_Rs2: %b ,mem_bypass1_Rs2: %b,wrb_bypass1_Rs2: %b,exec_intr_bp1_Rs2: %b,mem_intr_bp1_Rs2: %b,wrb_intr_bp1_Rs2: %b",
   //        exec_bypass1_Rs2,mem_bypass1_Rs2,wrb_bypass1_Rs2, exec_intr_bp1_Rs2, mem_intr_bp1_Rs2, wrb_intr_bp1_Rs2);
 //$display("exec_bypass2_Rs1: %b ,mem_bypass2_Rs1: %b,wrb_bypass2_Rs1: %b,exec_intr_bp2_Rs1: %b,mem_intr_bp2_Rs1: %b,wrb_intr_bp2_Rs1: %b",
@@ -400,7 +403,7 @@ $display ("Alu_opr1: %d, Alu_opr2: %d, stall_A: %b, stall_B: %b", Alu_opr1, Alu_
                         ((sign_bit1_buff == 1'b1)?{52'hFFFFFFFFFFFFF,imm_val1_buff}:{52'h0000000000000,imm_val1_buff});              //R-type & branch instruction's register value
 
   assign input1_data2 = (exec_bypass2_buff_Rs1 == 1'b1) ? Alu_op2_buff:(mem_bypass2_buff_Rs1 == 1'b1) ? reg_file_input2:
-                        (exec_intr_bp2_buff_Rs1 == 1'b1)? Alu_op1_buff: (mem_intr_bp2_buff_Rs1 == 1'b1)? Alu_op2_buff2 : Rs1_data2_buff;
+                        (exec_intr_bp2_buff_Rs1 == 1'b1)? Alu_op1_buff: (mem_intr_bp2_buff_Rs1 == 1'b1)? reg_file_input1 : Rs1_data2_buff;
 //(wrb_bypass2_buff_Rs2 == 1'b1) ? reg_file_input2
 //(wrb_intr_bp2_buff_Rs2 == 1'b1) ?reg_file_input1 
   assign input2_data2 = (Rs2_en2_buff == 1'b1) ? ((exec_bypass2_buff_Rs2 == 1'b1) ? Alu_op2_buff:(mem_bypass2_buff_Rs2 == 1'b1) ? reg_file_input2:
@@ -470,13 +473,13 @@ always @(posedge clk) begin
    reg_wr_en2_buff3 <= reg_wr_en2_buff2;
    Rd_addr2_buff3 <= Rd_addr2_buff2;
    
-    $display("--------------------------------");
+   $display("--------------------------------");
    $display("5th buffer pipeline A: \n pc_buff4: %h, Alu_op1_buff2: %d, Rd_addr1_buff3: %d, reg_wr_en1_buff3: %b", pc_buff4, Alu_op1_buff2,Rd_addr1_buff3, reg_wr_en1_buff3);
    $display("5th buffer pipeline B: \n pc4_buff4: %h, Alu_op2_buff2: %d, mem_data_output_buff: %d, mem_wr_en2_buff3: %b,Rd_addr2_buff3: %d, reg_wr_en2_buff3: %b", pc4_buff4,Alu_op2_buff2, mem_data_output_buff,mem_wr_en2_buff3, Rd_addr2_buff3, reg_wr_en2_buff3);
-   $display("------------------------------------------------------------------------------------------------------------------------------");
+   $display("-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------");
 end
   //This is a mux having two inputs with one select line.It provides the data memory output if instruction is load else provides the alu output to the register file 
-  assign reg_file_input2 = (Rd_addr1_buff3 == Rd_addr2_buff3)? ((pc4_buff4 > pc_buff4) ? ((mem_rd_en2_buff3 == 1'b1) ? mem_data_output_buff:Alu_op2_buff2) : Alu_op1_buff2) : ((mem_rd_en2_buff3 == 1'b1) ? mem_data_output_buff:Alu_op2_buff2) ;
+  assign reg_file_input2 = (Rd_addr1_buff3 === Rd_addr2_buff3)? ((pc4_buff4 > pc_buff4) ? ((mem_rd_en2_buff3 == 1'b1) ? mem_data_output_buff:Alu_op2_buff2) : Alu_op1_buff2) : ((mem_rd_en2_buff3 == 1'b1) ? mem_data_output_buff:Alu_op2_buff2) ;
   assign reg_file_input1 = (Rd_addr1_buff3 !== Rd_addr2_buff3)?  Alu_op1_buff2 : 64'hzzzzzzzzzzzzzzzz; 
 /*always@ (posedge instr)begin
    $monitor("Wen: %b,Rs1_addr: %h,Rs2_addr: %h,Wd_addr: %h,write_data: %h,Rs1_data: %h,Rs2_data: %h, alu_output: %h", Wen,Rs1_addr,Rs2_addr,Wd_addr,write_data,Rs1_data,Rs2_data,Alu_output);
