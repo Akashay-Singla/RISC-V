@@ -154,6 +154,17 @@ end
   mem_read_en=1'b0;
   branch_en = 1'b1;
 end
+//Jal instruction
+7'b1101111: begin
+  Rs1_addr = 5'bzzzzz;
+  Rs2_addr = 5'bzzzzz;
+  Rd_addr = input_inst[11:7];
+  Alu_opr = 4'b1011;
+  reg_write_en=1'b1;
+  mem_write_en=1'b0;
+  mem_read_en=1'b0;
+  branch_en = 1'b1;
+end
 default: begin
  Rs1_addr= 5'bz;
  Rs2_addr = 5'bz;
