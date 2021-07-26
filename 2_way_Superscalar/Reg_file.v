@@ -71,7 +71,7 @@ assign Rs1_data1 =  register[Rs1_addr1];  //gives register value for input 1 of 
 //end
 //Checks the Write enable bit then assigns the value to the particular register  
 always @(posedge clk)begin
-  $display("register[9]: %d, Rs2_addr2: %h, Rd_addr1: %h, Rd_addr2: %h", register[9], Rs2_addr2, Rd_addr1, Rd_addr2);
+ // $display("register[9]: %d, Rs2_addr2: %h, Rd_addr1: %h, Rd_addr2: %h", register[9], Rs2_addr2, Rd_addr1, Rd_addr2);
   if(Wen1)begin
   //$display("Entered into write loop");
   register[Rd_addr1] <= write_data1; 

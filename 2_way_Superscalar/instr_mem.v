@@ -371,6 +371,124 @@ byte_instr[64'h122]<= 8'h08;
 byte_instr[64'h121]<= 8'h88;
 byte_instr[64'h120]<= 8'hB3;
 
+
+byte_instr[64'h127]<= 8'h00;
+byte_instr[64'h126]<= 8'hA0;
+byte_instr[64'h125]<= 8'h05;
+byte_instr[64'h124]<= 8'h13;
+
+byte_instr[64'h12b]<= 8'h00;
+byte_instr[64'h12a]<= 8'h00;
+byte_instr[64'h129]<= 8'h03;
+byte_instr[64'h128]<= 8'h93;
+
+//jal instruction
+byte_instr[64'h12f]<= 8'h05;
+byte_instr[64'h12e]<= 8'h00;
+byte_instr[64'h12d]<= 8'h00;
+byte_instr[64'h12c]<= 8'h6F;
+
+byte_instr[64'h133]<= 8'h32;
+byte_instr[64'h132]<= 8'h73;
+byte_instr[64'h131]<= 8'h83;
+byte_instr[64'h130]<= 8'h93;
+
+byte_instr[64'h137]<= 8'h00;
+byte_instr[64'h136]<= 8'h10;
+byte_instr[64'h135]<= 8'h80;
+byte_instr[64'h134]<= 8'h93;
+
+byte_instr[64'h13b]<= 8'h00;
+byte_instr[64'h13a]<= 8'h10;
+byte_instr[64'h139]<= 8'h80;
+byte_instr[64'h138]<= 8'h93;
+
+byte_instr[64'h13f]<= 8'h00;
+byte_instr[64'h13e]<= 8'h10;
+byte_instr[64'h13d]<= 8'h80;
+byte_instr[64'h13c]<= 8'h93;
+
+byte_instr[64'h143]<= 8'h00;
+byte_instr[64'h142]<= 8'h10;
+byte_instr[64'h141]<= 8'h80;
+byte_instr[64'h140]<= 8'h93;
+
+byte_instr[64'h147]<= 8'h00;
+byte_instr[64'h146]<= 8'h10;
+byte_instr[64'h145]<= 8'h80;
+byte_instr[64'h144]<= 8'h93;
+
+byte_instr[64'h14b]<= 8'h00;
+byte_instr[64'h14a]<= 8'h10;
+byte_instr[64'h149]<= 8'h80;
+byte_instr[64'h148]<= 8'h93;
+
+byte_instr[64'h14f]<= 8'h00;
+byte_instr[64'h14e]<= 8'h10;
+byte_instr[64'h14d]<= 8'h80;
+byte_instr[64'h14c]<= 8'h93;
+
+byte_instr[64'h153]<= 8'h00;
+byte_instr[64'h152]<= 8'h10;
+byte_instr[64'h151]<= 8'h80;
+byte_instr[64'h150]<= 8'h93;
+
+byte_instr[64'h157]<= 8'h00;
+byte_instr[64'h156]<= 8'h00;
+byte_instr[64'h155]<= 8'h16;//16
+byte_instr[64'h154]<= 8'h63;
+
+byte_instr[64'h15b]<= 8'h00;
+byte_instr[64'h15a]<= 8'h00;
+byte_instr[64'h159]<= 8'h06;//o6
+byte_instr[64'h158]<= 8'h63;
+
+byte_instr[64'h15f]<= 8'h34;
+byte_instr[64'h15e]<= 8'h73;
+byte_instr[64'h15d]<= 8'h83;
+byte_instr[64'h15c]<= 8'h93;
+
+byte_instr[64'h163]<= 8'h33;
+byte_instr[64'h162]<= 8'h73;
+byte_instr[64'h161]<= 8'h83;
+byte_instr[64'h160]<= 8'h93;
+
+byte_instr[64'h167]<= 8'h70;
+byte_instr[64'h166]<= 8'hD3;
+byte_instr[64'h165]<= 8'h83;
+byte_instr[64'h164]<= 8'h93;
+
+
+byte_instr[64'h16b]<= 8'h00;
+byte_instr[64'h16a]<= 8'h10;
+byte_instr[64'h169]<= 8'h80;
+byte_instr[64'h168]<= 8'h93;
+
+byte_instr[64'h16f]<= 8'h00;
+byte_instr[64'h16e]<= 8'h10;
+byte_instr[64'h16d]<= 8'h80;
+byte_instr[64'h16c]<= 8'h93;
+
+byte_instr[64'h173]<= 8'h00;
+byte_instr[64'h172]<= 8'h10;
+byte_instr[64'h171]<= 8'h80;
+byte_instr[64'h170]<= 8'h93;
+
+byte_instr[64'h177]<= 8'h00;
+byte_instr[64'h176]<= 8'h10;
+byte_instr[64'h175]<= 8'h80;
+byte_instr[64'h174]<= 8'h93;
+
+byte_instr[64'h17b]<= 8'h00;
+byte_instr[64'h17a]<= 8'h10;
+byte_instr[64'h179]<= 8'h80;
+byte_instr[64'h178]<= 8'h93;
+
+byte_instr[64'h17f]<= 8'h00;
+byte_instr[64'h17e]<= 8'h10;
+byte_instr[64'h17d]<= 8'h80;
+byte_instr[64'h17c]<= 8'h93;
+
 end
 
   //$display("PC: %h,PC4: %h", PC,PC4);
@@ -393,13 +511,13 @@ module clk_input(output reg clk);
 initial begin
   //$dumpfile("datapath_log.vcd");
   //$dumpvars;
-  #11;
+  #60;
   $finish;
 end
 initial begin
     clk=0;
 end
-always #0.1 clk= ~clk;
+always #0.5 clk= ~clk;
 
 endmodule
 

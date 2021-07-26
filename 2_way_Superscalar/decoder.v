@@ -25,7 +25,7 @@ endcase
 endfunction
 
 
-function [2:0]Alu_opr_I;
+function [3:0]Alu_opr_I;
 input [2:0] func3;
     
 case (func3)
@@ -40,7 +40,7 @@ default: Alu_opr_I = 4'b1111; //NOP
 endcase
 endfunction
 
-function [2:0]Alu_opr_B;
+function [3:0]Alu_opr_B;
 input [2:0] func3;
     
 case (func3)
@@ -71,7 +71,7 @@ case (input_inst[6:0])
   branch_en = 1'b0;
   Rs2_en = 1'b1;
   Alu_opr = Alu_opr_R(input_inst[14:12],input_inst[31:25]);
-  $display("Rd_addr: %b", Rd_addr);
+  //$display("Rd_addr: %b", Rd_addr);
 end
 //I-immediate instructions
 7'b0010011: begin 
@@ -93,8 +93,19 @@ end
   reg_write_en=1'b0;
   branch_en = 1'b1;
   Rs2_en =1'b1;
-  $display("decoder A   Alu_opr: %b, Alu_opr: %b", input_inst[14:12],Alu_opr);
+ // $display("decoder A   Alu_opr: %b, Alu_opr: %b", input_inst[14:12],Alu_opr);
 end
+//Jal instruction
+7'b1101111: begin
+  Rs1_addr = 5'bzzzzz;
+  Rs2_addr = 5'bzzzzz;
+  Rd_addr = input_inst[11:7];
+  Alu_opr = 4'b1011;
+  reg_write_en=1'b1;
+  branch_en = 1'b1;
+  Rs2_en  =1'b0;
+end
+
 default: begin
   Rs1_addr= 5'bz;
   Rs2_addr = 5'bz;

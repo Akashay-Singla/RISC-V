@@ -24,7 +24,7 @@ sysc_uni_pwd=/home/015349334@SJSUAD.SJSU.EDU/ee271/RISC_V_Project/2_way_Supersca
 XDG_SESSION_ID=1665
 XDG_RUNTIME_DIR=/run/user/245455952
 XDG_DATA_DIRS=/home/015349334@SJSUAD.SJSU.EDU/.local/share/flatpak/exports/share:/var/lib/flatpak/exports/share:/usr/local/share:/usr/share
-VSCODE_IPC_HOOK_CLI=/run/user/245455952/vscode-ipc-9417daf5-77d3-4cee-aaca-f29bf68df62e.sock
+VSCODE_IPC_HOOK_CLI=/run/user/245455952/vscode-ipc-d77045de-33a1-416b-82ef-2a95c64dce63.sock
 VSCODE_GIT_IPC_HANDLE=/run/user/245455952/vscode-git-3ceb29c28d.sock
 VSCODE_GIT_ASKPASS_NODE=/home/015349334@SJSUAD.SJSU.EDU/.vscode-server/bin/c3f126316369cd610563c75b1b1725e0679adfb3/node
 VSCODE_GIT_ASKPASS_MAIN=/home/015349334@SJSUAD.SJSU.EDU/.vscode-server/bin/c3f126316369cd610563c75b1b1725e0679adfb3/extensions/git/dist/askpass-main.js
@@ -65,15 +65,15 @@ CDSLMD_LICENSE_FILE=5280@.cadence3.engr.sjsu.edu:/export/apps/cadence/license-cu
 BASH_FUNC_module()=() {  eval `/usr/bin/modulecmd bash $*`_}
 0
 6
-1627192815 instr_mem.v
-1626659966 Reg_file.v
+1627281379 instr_mem.v
+1627271845 Reg_file.v
 1626640267 Data_mem.v
-1626322024 Alu.v
-1626416014 decoder.v
-1627239082 2_way_superscalar.v
+1627280265 Alu.v
+1627277859 decoder.v
+1627283201 2_way_superscalar.v
 4
 0 
 1410372690 /apps/synopsys/VCSMX_NEW/linux/lib/libvirsim.so
 1410372633 /apps/synopsys/VCSMX_NEW/linux/lib/librterrorinf.so
 1410372654 /apps/synopsys/VCSMX_NEW/linux/lib/libsnpsmalloc.so
-1627239094 simv.daidir
+1627283207 simv.daidir
